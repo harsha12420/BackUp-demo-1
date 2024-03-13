@@ -1,0 +1,292 @@
+<app-page-header [title]="'STAFF'" [items]="['Staff']" [active_item]="'Staff-List'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Staff List</h4>
+        </div>
+        <!-- <div class="d-flex blocking-responsive">
+            <div class="me-2 d-flex spacing-down-side">
+              <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                (keyup.enter)="onSearch()" />
+              <button class="btn btn-primary me-2" (click)="onSearch()">
+                Search
+              </button>
+              <button class="btn btn-dark" (click)="onClear()">Clear</button>
+            </div>
+            <button class="btn btn-primary" (click)="onAddStaff()">
+              Add Staff
+            </button>
+          </div> -->
+        <!-- </div> -->
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" (click)="onSearch()" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onAddStaff()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select #selectExportAll (change)="exportAll(selectExportAll.value)">
+                <option value="" selected disabled>Export</option>
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('first_name')">
+                  Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'first_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'first_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('employee_code')">
+                  Employee Code
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'employee_code' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'employee_code' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('enrollment_type')">
+                  Enrollment Type
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'enrollment_type' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'enrollment_type' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('email')">
+                  Email
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'email' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'email' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Mobile</th>
+                <th scope="col" (click)="sortData('date_joining')">
+                  Date Of Joining
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'date_joining' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'date_joining' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('created_at')">
+                  Created At
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of staffList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>
+                  {{ item.first_name | titlecase }}
+                  {{ item.middle_name | titlecase }}
+                  {{ item.last_name | titlecase }}
+                </td>
+                <td>{{ item.employee_code }}</td>
+                <td>{{ item.enrollment_type }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.mobile }}</td>
+                <td class="dateing-inn">
+                  {{ item.date_joining | date : "yyyy-MM-dd hh:mm a" }}
+                </td>
+                <td class="dateing-inn">
+                  {{ item.created_at | date : "yyyy-MM-dd hh:mm a" }}
+                </td>
+                <td>
+                  <!-- <button class="btn btn-warning me-2" (click)="onEdit(item)">
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-dark"
+                    [routerLink]="['/admin/staff/view-staff', item.id]"
+                  >
+                    View
+                  </button> -->
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i [routerLink]="['/admin/staff/view-staff', item.id]" class="far fa-eye"></i>
+                    <i (click)="onEdit(item)" class="fas fa-edit"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #addStaff>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ isEdit ? "Edit" : "Add" }} Staff</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addStaffForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter first name" formControlName="first_name" />
+          <label>First name</label>
+          <div
+            *ngIf="(isFormSubmitted || stafForm['first_name'].touched) && stafForm['first_name'].errors?.['required']"
+            class="text-danger">
+            First name is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter middle name" formControlName="middle_name" />
+          <label>Middle name</label>
+          <div
+            *ngIf="(isFormSubmitted || stafForm['middle_name'].touched) && stafForm['middle_name'].errors?.['required']"
+            class="text-danger">
+            Last name is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter last name" formControlName="last_name" />
+          <label>Last name</label>
+          <div *ngIf="(isFormSubmitted || stafForm['last_name'].touched) && stafForm['last_name'].errors?.['required']"
+            class="text-danger">
+            Last name is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter mobile number" formControlName="mobile"
+            [min]="1000000000" [max]="9999999999" (keypress)="onPressAllowNumber($event)" />
+          <label>Mobile number</label>
+          <div *ngIf="(isFormSubmitted || stafForm['mobile'].touched) && stafForm['mobile'].errors?.['required']"
+            class="text-danger">
+            Mobile number is required.
+          </div>
+          <div
+            *ngIf="(isFormSubmitted || stafForm['mobile'].touched) && stafForm['mobile'].errors?.['min'] || stafForm['mobile'].errors?.['max']"
+            class="text-danger">
+            Please enter valid Mobile Number.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="email" class="form-control" placeholder="Enter email" formControlName="email" />
+          <label>Email address</label>
+          <div *ngIf="(isFormSubmitted || stafForm['email'].touched) && stafForm['email'].errors?.['required']"
+            class="text-danger">
+            Email address is required.
+          </div>
+          <div *ngIf="(isFormSubmitted || stafForm['email'].touched) && stafForm['email'].errors?.['email']"
+            class="text-danger">
+            Invalid email format.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12" *ngIf="!isEdit">
+          <div class="password-wrapper">
+            <input id="passwordInput" type="{{ showPassword ? 'text' : 'password' }}" class="form-control"
+              placeholder="Enter password" formControlName="password" />
+            <label>Password</label>
+            <button type="button" id="togglePassword" class="eye-button" (click)="togglePasswordVisibility()">
+              <em class="eye-icon fas" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'"></em>
+            </button>
+            <div *ngIf="(isFormSubmitted || stafForm['password'].touched) && stafForm['password'].errors?.['required']"
+              class="text-danger">
+              Password is required.
+            </div>
+            <div *ngIf="(isFormSubmitted || stafForm['password'].touched) && stafForm['password'].errors?.['minlength']"
+              class="text-danger">
+              Password should be at least 8 characters long.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12" formArrayName="role_ids">
+          <div *ngFor="let role of role_ids.controls; let i = index" [formGroupName]="i">
+            <div class="form-group selection-label-reverse">
+              <label>Select staff role</label>
+              <ng-select formControlName="role_id" [multiple]="true" [closeOnSelect]="false">
+                <ng-option [value]="role.id" *ngFor="let role of roleList">{{
+                  role.name
+                  }}</ng-option>
+              </ng-select>
+              <div class="text-danger"
+                *ngIf="role.get('role_id')?.errors?.['required'] && (role.get('role_id')?.touched || isFormSubmitted)">
+                Role is required.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

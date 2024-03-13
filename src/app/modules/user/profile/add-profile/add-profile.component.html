@@ -1,0 +1,49 @@
+<app-page-header [title]="'PROFILE'" [items]="['Profile']" [active_item]="'Profile'"></app-page-header>
+<div class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="card custom-card new-checkout-step-edit-cls-add">
+      <div class="card-body d-md-flex">
+        <div class="pos-relative w-fitcont for-edit-profile-go">
+          <span class="profile-image">
+            <img class="br-5" alt="" [src]="userProfile?.image"
+              onerror="this.src='../../../../assets/img/logo/schoolOfAchiever.png'" />
+          </span>
+        </div>
+        <div class="my-md-auto mt-4 prof-details">
+          <h4 *ngIf="userProfile?.first_name" class="font-weight-semibold ms-md-4 ms-0 mb-1 pb-0">
+            {{ userProfile?.first_name | titlecase }} {{ userProfile?.middle_name | titlecase }}
+            {{ userProfile?.last_name | titlecase }}
+          </h4>
+          <h4 *ngIf="!userProfile?.first_name" class="font-weight-semibold ms-md-4 ms-0 mb-1 pb-0">
+            {{ userProfile?.name | titlecase }}
+          </h4>
+          <p class="text-muted ms-md-4 ms-0 mb-2">
+            <span><em class="fa fa-phone me-2"></em></span><span class="font-weight-semibold me-2">Phone:</span><span>{{
+              userProfile?.mobile }}</span>
+          </p>
+          <p class="text-muted ms-md-4 ms-0 mb-2">
+            <span><em class="fa fa-envelope me-2"></em></span><span
+              class="font-weight-semibold me-2">Email:</span><span>{{ userProfile?.email }}</span>
+          </p>
+          <div class="ms-4 ms-sm-0">
+            <button class="btn btn-primary" (click)="onEdit()">
+              Edit Profile
+            </button>
+          </div>
+          <!-- <p class="text-muted ms-md-4 ms-0 mb-2">
+            <span><i class="fa fa-globe me-2"></i></span
+            ><span class="font-weight-semibold me-2">Website</span
+            ><span>sprukotechnologies</span>
+          </p> -->
+        </div>
+      </div>
+      <app-school-profile *ngIf="isEdit && userRole == userRoleType.schoolAdmin" [userProfile]="userProfile"
+        (onEditEmitter)="onEditEmitter()"></app-school-profile>
+      <app-edit-profile *ngIf="
+          isEdit &&
+          (userRole == userRoleType.superAdmin ||
+            userRole == userRoleType.organization)
+        " [userProfile]="userProfile" (onEditEmitter)="onEditEmitter()"></app-edit-profile>
+    </div>
+  </div>
+</div>

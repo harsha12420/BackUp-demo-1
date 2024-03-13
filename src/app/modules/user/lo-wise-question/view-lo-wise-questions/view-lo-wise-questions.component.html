@@ -1,0 +1,209 @@
+<app-page-header [title]="'LO Wise Questions'" [items]="['LO Wise Questions']"
+  [active_item]="'LO Wise Questions'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">LO wise questions</h4>
+        </div>
+        <!-- <div class="d-flex blocking-responsive">
+            <div class="me-2 d-flex spacing-down-side">
+              <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                (keyup.enter)="onSearch()" />
+              <button class="btn btn-primary me-2" (click)="onSearch()">
+                Search
+              </button>
+              <button class="btn btn-dark" (click)="onClear()">Clear</button>
+            </div>
+            <button class="btn btn-primary" (click)="addLessonWiseTopicSubTopic()">
+              Add LO Wise Questions
+            </button>
+          </div>
+        </div> -->
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="addLessonWiseTopicSubTopic()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('medium_name')">
+                  Medium Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'medium_name' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'medium_name' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('standard_name')">
+                  Standard Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'standard_name' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'standard_name' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('subject_name')">
+                  Subject Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'subject_name' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'subject_name' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('lesson')">
+                  Lesson
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'lesson' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'lesson' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('topic_name')">
+                  Topic Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'topic_name' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'topic_name' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('name')">
+                  Sub Topic Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{'arrow-color': orderBy === 'name' && isAscending}"></span>
+                    <span class="arrow-down" [ngClass]="{'arrow-color': orderBy === 'name' && !isAscending}"></span>
+                  </div>
+                </th>
+                <th scope="col">Question</th>
+                <th scope="col">Question Type</th>
+                <th scope="col">Difficulty Level</th>
+                <th scope="col">Marks</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="questionsRep.length">
+              <tr *ngFor="let item of questionsRep; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.medium_name | titlecase }}</td>
+                <td>{{ item.standard_name | titlecase }}</td>
+                <td>{{ item.subject_name | titlecase }}</td>
+                <td>{{ item.lesson_name | titlecase }}</td>
+                <td>{{ item.topic_name | titlecase }}</td>
+                <td>{{ item.name ? item.name : 'NA'  | titlecase }}</td>                
+                <td>
+                  <ckeditor [data]="item.question" [disabled]="true" [config]="{ toolbar: []}"  [editor]="Editor" id="classic-editor" name="classic-editor"></ckeditor>
+                </td>
+                <td>{{ item.question_option_type | titlecase }}</td>
+                <td>{{ item.difficulty_level_name | titlecase }}</td>
+                <td>{{ item.marks | titlecase }}</td>
+                <td>{{ item.correct_answer | titlecase }}</td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <button type="button" class="btn ripple btn-grey me-2" id="swal-parameter" (click)="editQuestion(item.id)"> Edit </button>
+                    <button type="button" class="btn ripple btn-danger" id="swal-parameter" (click)="deleteQuestion(item.id)"> Delete </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!questionsRep.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [pageSize]="pageLimit" [(page)]="currentPage"
+            aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #LessonPlanning>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      {{ EditId ? "Edit" : " Add" }} Lesson Wise
+      {{
+      editTopicSubTopic === 1
+      ? "Topic"
+      : "Sub
+      Topic"
+      }}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="editTopicSubTopicForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-6">
+          <input type="text" class="form-control" placeholder="{{
+              editTopicSubTopic === 1 ? 'Topic' : 'Sub Topic'
+            }} Name" formControlName="name" />
+          <label>{{ editTopicSubTopic === 1 ? "Topic" : "Sub Topic" }} Name
+            <span class="required-asterisk">*</span></label>
+          <span *ngIf="(isSubmitted || editForm['name'].touched) && editForm['name'].errors?.['required']"
+            class="text-danger">
+            {{ editTopicSubTopic === 1 ? "Topic" : "Sub Topic" }} Name is
+            required.
+          </span>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="number" class="form-control" placeholder="Version No" formControlName="version_no" />
+          <label>Version No <span class="required-asterisk">*</span></label>
+          <span *ngIf="(isSubmitted || editForm['version_no'].touched) && editForm['version_no'].errors?.['required']"
+            class="text-danger">
+            Version No is required.
+          </span>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse" *ngIf="editTopicSubTopic === 1">
+          <label>Select Lesson <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" (change)="lesson($event)" formControlName="lesson" [clearable]="false">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of lessonList">
+              {{ Data.lesson }}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="(isSubmitted || editForm['lesson'].touched) && editForm['lesson'].errors?.['required']"
+            class="text-danger">
+            Lesson is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

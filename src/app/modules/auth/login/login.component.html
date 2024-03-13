@@ -1,0 +1,86 @@
+<div class="page">
+  <div class="page-single">
+    <div class="container">
+      <div class="row">
+        <div
+          class="col-xl-5 col-lg-6 col-md-8 col-sm-8 col-xs-10 card-sigin-main mx-auto my-auto py-4 justify-content-center">
+          <div class="card-sigin">
+            <div class="main-card-signin d-md-flex">
+              <div class="wd-100p">
+                <div class="d-flex mb-4"></div>
+                <div class="">
+                  <div class="main-signup-header">
+                    <h2>Welcome back!</h2>
+                    <h6 class="font-weight-semibold mb-4">
+                      Please sign in to continue.
+                    </h6>
+                    <div class="panel panel-primary">
+                      <div class="panel-body tabs-menu-body border-0 p-3">
+                        <form [formGroup]="loginForm" (ngSubmit)="login()" autocomplete="off">
+                          <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Enter email"
+                              formControlName="email" />
+                            <label>Email <span class="required-asterisk">*</span></label>
+                            <div *ngIf="
+                                (submitted || form['email'].touched) &&
+                                form['email'].hasError('required')
+                              " class="text-danger">
+                              Email is required.
+                            </div>
+                            <div *ngIf="
+                                (submitted || form['email'].touched) &&
+                                form['email'].hasError('email')
+                              " class="text-danger">
+                              Invalid email format.
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                            <div class="password-wrapper">
+                              <input id="passwordInput" type="{{ showPassword ? 'text' : 'password' }}"
+                                class="form-control" placeholder="Enter password" formControlName="password" />
+                              <label>Password <span class="required-asterisk">*</span></label>
+                              <button type="button" id="togglePassword" class="eye-button"
+                                (click)="togglePasswordVisibility()">
+                                <em class="eye-icon fas" [ngClass]="
+                                    showPassword ? 'fa-eye' : 'fa-eye-slash'
+                                  "></em>
+                              </button>
+                              <div *ngIf="
+                                  (submitted || form['password'].touched) &&
+                                  form['password'].hasError('required')
+                                " class="text-danger">
+                                Password is required.
+                              </div>
+                              <div *ngIf="
+                                  (submitted || form['password'].touched) &&
+                                  form['password'].hasError('minlength')
+                                " class="text-danger">
+                                Password should be at least 8 characters long.
+                              </div>
+                            </div>
+                            <!-- Error messages... -->
+                          </div>
+
+                          <button type="submit" class="btn btn-primary btn-block" [disabled]="isSubmitting">
+                            Login
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="main-signin-footer text-center mt-3">
+                      <p>
+                        <a (click)="navigateToForgetPassword()" class="mb-3">Forgot password?</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

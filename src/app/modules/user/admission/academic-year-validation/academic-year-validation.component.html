@@ -1,0 +1,202 @@
+<app-page-header [title]="'Academic Year Validation'" [items]="['Academic Year Validation']"
+    [active_item]="'Add Academic Year Validation'"></app-page-header>
+<div class="row row-sm">
+    <div class="col-xl-12">
+        <div class="card add-staff-here-update-cls">
+            <div class="card-header pb-0">
+                <div class="d-flex justify-content-between blocking-responsive">
+                    <h4 class="card-title mg-b-0">Academic Year Validation List</h4>
+                </div>
+
+                <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+                    <div class="d-flex spacing-down-side position-relative">
+                        <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                            (keyup.enter)="onSearch()" />
+                        <div class="set-position-auto-cls-adding">
+                            <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+                            <i class="far fa-times-circle" (click)="onClear()"
+                                [ngClass]="{ 'show-icon': searchString }"></i>
+                        </div>
+                    </div>
+                    <div class="d-flex blocking-responsive">
+                        <div class="add-reporting spacing-down-side">
+                            <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="export-btn-cls-add spacing-down-side">
+                        <select #exportAll (change)="exportAcademicYear(exportAll.value)">
+                            <option value="" selected disabled>Export</option>
+                            <option value="pdf">Export to PDF</option>
+                            <option value="excel">Export to Excel</option>
+                            <option value="csv">Export to CSV</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table summary="table" class="table mg-b-0 text-md-nowrap">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sr. No.</th>
+                                <th scope="col">Academic Year</th>
+                                <th scope="col">Medium</th>
+                                <th scope="col">Standard</th>
+                                <th scope="col">Minimum Age Criteria</th>
+                                <th scope="col">Maximum Age Criteria</th>
+                                <th scope="col">Enrollment Last Date</th>
+                                <th scope="col" (click)="sortData('created_at')">
+                                    Date & Time
+                                    <div class="spacing-up-down-side-set">
+                                        <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && isAscending
+                      }"></span>
+                                        <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && !isAscending
+                      }"></span>
+                                    </div>
+                                </th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngIf="list.length">
+                            <tr *ngFor="let item of list; let i = index">
+                                <th scope="row">
+                                    {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                                </th>
+                                <td>{{ item.academicyear.title | titlecase }}</td>
+                                <td>{{ item.mediumName }}</td>
+                                <td>{{ item.standardName }}</td>
+                                <td>{{ item.minimumAge }}</td>
+                                <td>{{ item.maximumAge || '-' }}</td>
+                                <td>{{ item.enrollmentLastDate | date : "yyyy-MM-dd" }}</td>
+                                <td class="dateing-inn">
+                                    {{ item.created_at | date : "yyyy-MM-dd hh:mm a" }}
+                                </td>
+                                <td>
+                                    <div
+                                        class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                                        <i (click)="editAcademicYear(item._id)" class="fas fa-edit"></i>
+                                        <i (click)="deleteAcademicYear(item._id)" class="fas fa-trash"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="!list.length">
+                            <tr>
+                                <td colspan="14" class="text-center">No Data Found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+                    <div class="d-flex align-items-center">
+                        <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option [value]="totalItems">All</option>
+                        </select>
+                        <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+                    </div>
+                    <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+                        [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+                    </ngb-pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #addTemp>
+    <div class="modal-header">
+        <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Academic Year Validation</h4>
+        <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+
+                <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+                    <label>Select Academic Year <span class="required-asterisk">*</span></label>
+                    <ng-select id="inputGroupSelect01" formControlName="acdemicYearId">
+                        <ng-option value="{{ Data._id }}" *ngFor="let Data of academicYearList">
+                            {{ Data.title }}
+                        </ng-option>
+                    </ng-select>
+                    <div *ngIf="(isSubmitted || form['acdemicYearId'].touched) && form['acdemicYearId'].errors?.['required']"
+                        class="text-danger">
+                        Academic Year is required.
+                    </div>
+                </div>
+
+                <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+                    <label>Select Medium <span class="required-asterisk">*</span></label>
+                    <ng-select (change)="getMediumId($event)" formControlName="mediumId" [clearable]="false">
+                        <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                            {{ Data.name }}
+                        </ng-option>
+                    </ng-select>
+                    <div *ngIf="(isSubmitted || form['mediumId'].touched) && form['mediumId'].errors?.['required']"
+                        class="text-danger">
+                        Medium is required.
+                    </div>
+                </div>
+
+                <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+                    <label>Select Standard <span class="required-asterisk">*</span></label>
+                    <ng-select id="inputGroupSelect02" formControlName="standardId">
+                        <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                            {{ Data.name }}
+                        </ng-option>
+                    </ng-select>
+                    <div *ngIf="(isSubmitted || form['standardId'].touched) && form['standardId'].errors?.['required']"
+                        class="text-danger">
+                        Standard is required.
+                    </div>
+                </div>
+
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                    <input type="number" class="form-control" id="minimumAge" formControlName="minimumAge"
+                        placeholder="Minimum Age">
+                    <label>Minimum Age<span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['minimumAge'].touched) && form['minimumAge'].errors?.['required']"
+                        class="text-danger">
+                        Minimum Age is required.
+                    </div>
+                </div>
+
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                    <input type="number" class="form-control" id="maximumAge" formControlName="maximumAge"
+                        placeholder="Maximum Age">
+                    <label>Maximum Age</label>
+                    <div *ngIf="(isSubmitted || form['maximumAge'].touched) && addForm.errors?.['minmax']"
+                        class="text-danger">
+                        Maximum Age should be greater than Minimum Age.
+                    </div>
+                </div>
+
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                    <input type="date" id="enrollmentLastDate" formControlName="enrollmentLastDate"
+                        placeholder="Enrollment Last Date" />
+                    <label for="enrollmentLastDate">Enrollment Last Date <span
+                            class="required-asterisk">*</span></label>
+                    <div *ngIf="
+                        (isSubmitted ||
+                          form['enrollmentLastDate'].touched) &&
+                        form['enrollmentLastDate'].hasError('required')
+                      " class="text-danger">
+                        Enrollment Last Date is required.
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+            </div>
+        </form>
+    </div>
+</ng-template>

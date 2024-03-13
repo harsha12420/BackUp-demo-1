@@ -1,0 +1,109 @@
+<app-page-header [title]="'Permission'" [items]="['Permission']" [active_item]="'Add Permission'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h4 class="card-title mg-b-0">Permission Module</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="card-body main-permission-role-design-cls">
+            <div class="row">
+              <div class="form-group col-lg-6 selection-label-reverse">
+                <label>Role Name <span class="required-asterisk">*</span></label>
+                <select class="form-control" [(ngModel)]="roleId" (change)="getMenuByRoleId()">
+                  <!-- <option [value]="null" disabled selected>Select Role</option> -->
+                  <option [value]="role.id" *ngFor="let role of roleList">
+                    {{ role.name }}
+                  </option>
+                </select>
+                <div class="text-danger" *ngIf="isSubmitted && !roleId">
+                  Please select role name
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="roleId" class="inner-body-part-edit-cls-add mt-4">
+              <div class="row">
+                <div class="form-group col-lg-5 border-part-add-top-bottom pe-0" *ngIf="roleId">
+                  <h3 class="mb-4">Select Side Menu</h3>
+                  <div *ngFor="let parent of parentList"
+                    class="d-flex align-items-center for-all-same-cls-grouping-checking">
+                    <input type="checkbox" name="sidemenu" id="sidemenu" #checkbox (change)="
+                        onParentSideMenuSelect(parent.menuId, checkbox.checked)
+                      " [(ngModel)]="parent.isEnable" style="cursor: pointer" />
+                    <h5 class="m-0 ms-3" (click)="onParentSelect(parent.menuId)"
+                      [class.active]="parent.menuId === parentId" style="cursor: pointer">
+                      {{ parent.route_name }}
+                    </h5>
+                  </div>
+                </div>
+                <div class="form-group col-lg-7 border-part-add-top-bottom ps-0 labeling-left-side-remove-cls-add-m"
+                  *ngIf="parentId" id="subSideMenuDiv">
+                  <div class="d-flex justify-content-between">
+                    <h3 class="mb-4 col-9">Select Sub Side Menu</h3>
+                    <div class="d-flex col-3">
+                      <div class="d-flex col-lg-4 justify-content-center">
+                        <label for="read">Read</label>
+                      </div>
+                      <div class="d-flex col-lg-4 justify-content-center">
+                        <label for="write">Write</label>
+                      </div>
+                      <div class="d-flex col-lg-4 justify-content-center">
+                        <label for="write">Delete</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngFor="let child of childList">
+                    <div *ngIf="child.parent_id === parentId"
+                      class="d-flex justify-content-between side-menu for-all-same-cls-grouping-checking">
+                      <h5 class="col-9">{{ child.route_name }}</h5>
+                      <div class="d-flex col-3 pe-0 ps-0">
+                        <div class="d-flex col-lg-4 justify-content-center">
+                          <input type="checkbox" [(ngModel)]="child.read" #readCheckbox (change)="
+                              onChildSideMenuSelect(
+                                child.parent_id,
+                                readCheckbox.checked,
+                                child,
+                                true
+                              )
+                            " style="cursor: pointer" />
+                        </div>
+                        <div class="d-flex col-lg-4 justify-content-center">
+                          <input type="checkbox" [(ngModel)]="child.write" #writeCheckbox (change)="
+                              onChildSideMenuSelect(
+                                child.parent_id,
+                                writeCheckbox.checked,
+                                child
+                              )
+                            " style="cursor: pointer" />
+                        </div>
+                        <div class="d-flex col-lg-4 justify-content-center">
+                          <input type="checkbox" [(ngModel)]="child.delete" #deleteCheckbox (change)="
+                              onChildSideMenuSelect(
+                                child.parent_id,
+                                deleteCheckbox.checked,
+                                child
+                              )
+                            " style="cursor: pointer" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12">
+                <button type="submit" class="btn btn-primary mt-4 mb-0" (click)="submit()">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1146 @@
+<app-page-header [title]="'Staff'" [items]="['Staff']"
+  [active_item]="(isEdit ? 'Edit' : 'Add') + '-Staff'"></app-page-header>
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card custom-card">
+      <div class="card-header bg-transparent border-bottom-0">
+        <div>
+          <label class="main-content-label mb-2">{{ isEdit ? "Edit" : "Add" }} Staff
+            <span class="required-asterisk">*</span></label>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="checkout-steps wrapper new-checkout-step-edit-cls-add">
+              <div id="checkoutsteps">
+                <mat-stepper [linear]="isLinear" #stepper>
+                  <mat-step [stepControl]="firstFormGroup">
+                    <div class="content clearfix">
+                      <!-- SECTION 1 -->
+                      <ng-template matStepLabel>Basic Information</ng-template>
+                      <section class="body current mt-3">
+                        <form [formGroup]="firstFormGroup" class="d-flex flex-wrap" (ngSubmit)="onSubmitFirstForm()">
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" id="first_name" class="form-control" formControlName="first_name"
+                              placeholder="First Name" />
+                            <label for="first_name">First Name <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['first_name'].touched) && firstform['first_name'].errors?.['required']"
+                              class="text-danger">
+                              First Name is required.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" id="middle_name" class="form-control" formControlName="middle_name"
+                              placeholder="Middle Name" />
+                            <label for="middle_name">Middle Name</label>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" id="last_name" class="form-control" formControlName="last_name"
+                              placeholder="Last Name" />
+                            <label for="last_name">Last Name <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['last_name'].touched) && firstform['last_name'].errors?.['required']"
+                              class="text-danger">
+                              Last Name is required.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" class="form-control" placeholder="Enter mobile number"
+                              formControlName="mobile" [min]="1000000000" [max]="9999999999"
+                              (keypress)="onPressAllowNumber($event)" />
+                            <label>Mobile Number <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['mobile'].touched) && firstform['mobile']?.errors?.['required']"
+                              class="text-danger">
+                              Mobile Number is required.
+                            </div>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['mobile'].touched) && (firstform['mobile']?.errors?.['min'] || firstform['mobile']?.errors?.['max'])"
+                              class="text-danger">
+                              Please enter valid Mobile Number.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" class="form-control" placeholder="Enter whatsapp mobile"
+                              formControlName="whatsapp_number" [min]="1000000000" [max]="9999999999"
+                              (keypress)="onPressAllowNumber($event)" />
+                            <label>Whatsapp Number <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['whatsapp_number'].touched) && firstform['whatsapp_number']?.errors?.['required']"
+                              class="text-danger">
+                              Whatsapp number is required.
+                            </div>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['whatsapp_number'].touched) && (firstform['whatsapp_number']?.errors?.['min'] || firstform['whatsapp_number']?.errors?.['max'])"
+                              class="text-danger">
+                              Please enter valid Mobile Number.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="email" class="form-control" placeholder="Enter Personal Email"
+                              formControlName="personal_email" />
+                            <label>Personal Email <span class="required-asterisk">*</span></label>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['personal_email'].touched) &&
+                                firstform['personal_email'].hasError('required')
+                              " class="text-danger">
+                              Personal Email is required.
+                            </div>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['personal_email'].touched) &&
+                                firstform['personal_email'].hasError('pattern')
+                              " class="text-danger">
+                              Invalid email format.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="email" class="form-control" placeholder="Enter office Email"
+                              formControlName="email" (blur)="verifyEmail()" />
+                            <label>Office Email <span class="required-asterisk">*</span></label>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['email'].touched) &&
+                                firstform['email'].hasError('required')
+                              " class="text-danger">
+                              Office Email is required.
+                            </div>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['email'].touched) &&
+                                firstform['email'].hasError('pattern')
+                              " class="text-danger">
+                              Invalid email format.
+                            </div>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['email'].touched) &&
+                                firstform['email'].hasError('emailExist') &&
+                                !firstform['email'].hasError('pattern') &&
+                                !firstform['email'].hasError('required')
+                              " class="text-danger">
+                              Email already exists
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6" *ngIf="!isEdit">
+                            <input id="passwordInput" type="{{ showPassword ? 'text' : 'password' }}"
+                              class="form-control" placeholder="Enter password" formControlName="password" />
+                            <label>Password <span class="required-asterisk">*</span></label>
+                            <button type="button" id="togglePassword" class="eye-button"
+                              (click)="togglePasswordVisibility()">
+                              <em class="eye-icon fas" [ngClass]="
+                                  showPassword ? 'fa-eye' : 'fa-eye-slash'
+                                "></em>
+                            </button>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['password'].touched) && firstform['password'].errors?.['required']"
+                              class="text-danger">
+                              Password is required.
+                            </div>
+                            <div
+                              *ngIf="(isFirstFormSubmitted || firstform['password'].touched) && firstform['password'].errors?.['minlength']"
+                              class="text-danger">
+                              Password should be at least 8 characters long.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="date" id="birth_date" formControlName="birth_date" [max]="todayDate" />
+                            <label for="birth_date">Date of Birth <span class="required-asterisk">*</span></label>
+
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['birth_date'].touched) &&
+                                firstform['birth_date'].hasError('required')
+                              " class="text-danger">
+                              Date of Birth is required.
+                            </div>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['birth_date'].touched) &&
+                                firstform['birth_date'].hasError('birth_date')
+                              " class="text-danger">
+                              Invalid Birth format.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="date" id="date_joining" [max]="todayDate" formControlName="date_joining" />
+                            <label for="date_joining">Date of Joining <span class="required-asterisk">*</span></label>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['date_joining'].touched) &&
+                                firstform['date_joining'].hasError('required')
+                              " class="text-danger">
+                              Date of Joining is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-12 col-md-6 selection-label-reverse">
+                            <label for="enrollment_type">Enrollment Type <span
+                                class="required-asterisk">*</span></label>
+                            <ng-select formControlName="enrollment_type">
+                              <ng-option value="Permanent">Permanent</ng-option>
+                              <ng-option value="Temporary">Temporary</ng-option>
+                              <ng-option value="Visiting">Visiting</ng-option>
+                            </ng-select>
+
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['enrollment_type'].touched) &&
+                                firstform['enrollment_type'].hasError(
+                                  'required'
+                                )
+                              " class="text-danger">
+                              Enrollment is required.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6 selection-label-reverse">
+                            <label for="marital_status">Marital Status <span class="required-asterisk">*</span></label>
+                            <ng-select id="marital_status" formControlName="marital_status">
+                              <ng-option value="Single">Single</ng-option>
+                              <ng-option value="Married">Married</ng-option>
+                              <ng-option value="Divorced">Divorced</ng-option>
+                              <ng-option value="Widowed">Widowed</ng-option>
+                            </ng-select>
+
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['marital_status'].touched) &&
+                                firstform['marital_status'].hasError('required')
+                              " class="text-danger">
+                              Marital Status is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-12 col-md-6">
+                            <input type="text" id="rfid_card_details" formControlName="rfid_card_details"
+                              placeholder="RFID Card Details" />
+                            <label for="rfid_card_details">RFID Card Details <span
+                                class="required-asterisk">*</span></label>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['rfid_card_details'].touched) &&
+                                firstform['rfid_card_details'].hasError(
+                                  'required'
+                                )
+                              " class="text-danger">
+                              RFID Card Details is required.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-12 col-md-6 selection-label-reverse">
+                            <label for="staff_room_id">Staff Room </label>
+                            <ng-select id="staff_room_id" formControlName="staff_room_id">
+                              <ng-option *ngFor="let data of staffRoomList" [value]="data.id"> {{data.name}}
+                              </ng-option>
+                            </ng-select>
+                            <div *ngIf="
+                                (isFirstFormSubmitted ||
+                                  firstform['staff_room_id'].touched) &&
+                                firstform['staff_room_id'].hasError('required')
+                              " class="text-danger">
+                              Staff room is required.
+                            </div>
+                          </div>
+                          <div class="col-lg-6 col-12 col-md-6"></div>
+                          <h6 class="col-12">Subject Allotment</h6>
+                          <div class="col-12" formArrayName="subject_allotment_ids">
+                            <div *ngFor="let subject of subject_allotment_ids().controls; let i = index">
+
+                              <div class="row" [formGroupName]="i">
+                                <div class="form-group selection-label-reverse col-lg-4 col-10 col-md-4">
+                                  <label>Medium <span class="required-asterisk">*</span></label>
+                                  <ng-select id="medium_id" formControlName="medium_id" [clearable]="false">
+                                    <ng-option *ngFor="let data of mediumList" [value]="data.id">
+                                      {{data.name}}
+                                    </ng-option>
+                                  </ng-select>
+                                  <div *ngIf="
+                                      (isSubjectAllotmentSubmitted ||
+                                        subject.get('medium_id')?.touched) &&
+                                      subject
+                                        .get('medium_id')
+                                        ?.hasError('required')
+                                    " class="text-danger">
+                                    Medium is required.
+                                  </div>
+                                </div>
+
+                                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                                  <label>Standard <span class="required-asterisk">*</span></label>
+                                  <ng-select id="standard_ids" formControlName="standard_ids" [multiple]="true"
+                                    [closeOnSelect]="false">
+                                    <ng-option *ngFor="let data of standardList" [value]="data.id">
+                                      {{data.name}}
+                                    </ng-option>
+                                  </ng-select>
+
+                                  <div *ngIf="
+                                      (isSubjectAllotmentSubmitted ||
+                                        subject.get('standard_ids')?.touched) &&
+                                      subject
+                                        .get('standard_ids')
+                                        ?.hasError('required')
+                                    " class="text-danger">
+                                    Standard is required.
+                                  </div>
+                                </div>
+
+                                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                                  <label>Subject <span class="required-asterisk">*</span></label>
+                                  <ng-select id="subject_ids" formControlName="subject_ids" [multiple]="true"
+                                    [closeOnSelect]="false">
+                                    <ng-option *ngFor="let data of subjectList" [value]="data.id">
+                                      {{data.name}}
+                                    </ng-option>
+                                  </ng-select>
+
+                                  <div *ngIf="
+                                      (isSubjectAllotmentSubmitted ||
+                                        subject.get('subject_ids')?.touched) &&
+                                      subject
+                                        .get('subject_ids')
+                                        ?.hasError('required')
+                                    " class="text-danger">
+                                    Subject is required.
+                                  </div>
+                                </div>
+
+                                <div class="col-lg-2 col-2 col-md-2 mb-sm-2 mb-md-2"><button class="btn btn-danger"
+                                    (click)="removeSubjectAllotment(i)"><span class="cross-cls-svg-added">
+                                      <i class="fas fa-times"></i>
+                                    </span></button>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="ms-0 mt-2">
+                              <button class="btn btn-primary" type="button" (click)="addSubjectAllotment()">
+                                Add Subject Allotment
+                              </button>
+                            </div>
+                          </div>
+                          <div class="col-lg-6 col-12 col-md-6"></div>
+                          <div class="clearfix mt-3 col-12 d-flex justify-content-end">
+                            <button class="btn btn-primary" type="submit" matStepperNext>
+                              Next
+                            </button>
+                          </div>
+                        </form>
+                      </section>
+                    </div>
+                  </mat-step>
+                  <!-- #docregion label -->
+                  <mat-step [stepControl]="secondFormGroup">
+                    <ng-template matStepLabel>Family and Ice Details</ng-template>
+                    <div class="content clearfix mt-3 both-side-adding-dp-cls">
+                      <form [formGroup]="secondFormGroup" class="needs-validation" (ngSubmit)="onSubmitSecondForm()"
+                        novalidate="">
+                        <div class="row">
+                          <div class="form-group selection-label-reverse col-lg-6 col-12 col-md-6">
+                            <label>Select primary staff role
+                              <span class="required-asterisk">*</span></label>
+                            <ng-select formControlName="primary_role_id" (change)="onPrimaryRoleChange($event)"
+                              [clearable]="false">
+                              <ng-option [value]="role.id" *ngFor="let role of primaryRoleList">{{ role.name
+                                }}</ng-option>
+                            </ng-select>
+                            <div class="text-danger"
+                              *ngIf="secondform['primary_role_id']?.errors?.['required'] && (secondform['primary_role_id']?.touched || isSecondFormSubmitted)">
+                              Primary role is required.
+                            </div>
+                          </div>
+                          <div class="col-lg-6 col-12 col-md-6" formArrayName="role_ids">
+                            <div *ngFor="let role of role_ids.controls; let i = index" [formGroupName]="i">
+                              <div class="form-group selection-label-reverse">
+                                <label>Select secondary staff roles
+                                  <span class="required-asterisk">*</span></label>
+                                <ng-select formControlName="role_id" [multiple]="true" [closeOnSelect]="false"
+                                  (change)="onSecondaryRoleChange($event)">
+                                  <ng-option [value]="role.id" *ngFor="let role of secondaryRoleList">{{ role.name
+                                    }}</ng-option>
+                                </ng-select>
+
+                                <div class="text-danger"
+                                  *ngIf="role.get('role_id')?.errors?.['required'] && (role.get('role_id')?.touched || isSecondFormSubmitted)">
+                                  Secondary role is required.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-12 col-12 col-md-12" formArrayName="reporting_role_ids">
+                            <div *ngFor="let role of reporting_role_ids.controls; let i = index" [formGroupName]="i">
+                              <div class="form-group selection-label-reverse">
+                                <label>Select reporting authority roles
+                                  <span class="required-asterisk">*</span></label>
+                                <ng-select formControlName="role_id" [multiple]="true" [closeOnSelect]="false">
+                                  <ng-option [value]="role.id" *ngFor="let role of reportingRoleList">{{ role.name
+                                    }}</ng-option>
+                                </ng-select>
+
+                                <div class="text-danger"
+                                  *ngIf="role.get('role_id')?.errors?.['required'] && (role.get('role_id')?.touched || isSecondFormSubmitted)">
+                                  Reporting authority role is required.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h6>Enter Ice Details</h6>
+                        <div formArrayName="ice_ids">
+                          <div class="row" *ngFor="let ice of ice_ids().controls; let i = index" [formGroupName]="i">
+                            <div class="form-group col-lg-3 col-md-6">
+                              <input type="text" class="form-control" formControlName="contact_name"
+                                placeholder="Enter Contact Name" />
+                              <label for="contact_name">Contact Name <span class="required-asterisk">*</span></label>
+                              <div
+                                *ngIf="(isIceGroupSubmitted || ice.get('contact_name')?.touched) && ice.get('contact_name')?.errors?.['required']"
+                                class="text-danger">
+                                Contact Name is required.
+                              </div>
+                            </div>
+                            <div class="form-group col-lg-3 col-md-6 selection-label-reverse">
+                              <label>Select relation type <span class="required-asterisk">*</span></label>
+                              <ng-select formControlName="relation">
+                                <ng-option [value]="relation.name" *ngFor="let relation of relationTypeArray">{{
+                                  relation.name }}</ng-option>
+                              </ng-select>
+
+                              <div class="text-danger"
+                                *ngIf="ice.get('relation')?.errors?.['required'] && (isIceGroupSubmitted || ice.get('relation')?.touched)">
+                                Relation type is required.
+                              </div>
+                            </div>
+                            <div class="form-group col-lg-3 col-md-6">
+                              <input type="text" class="form-control" placeholder="Enter mobile number"
+                                formControlName="contact_number" [min]="1000000000" [max]="9999999999"
+                                (keypress)="onPressAllowNumber($event)" />
+                              <label>Contact Mobile Number <span class="required-asterisk">*</span></label>
+                              <div
+                                *ngIf="(isIceGroupSubmitted || ice.get('contact_number')?.touched) && ice.get('contact_number')?.errors?.['required']"
+                                class="text-danger">
+                                Mobile number is required.
+                              </div>
+                              <div
+                                *ngIf="(isIceGroupSubmitted || ice.get('contact_number')?.touched) && (ice.get('contact_number')?.errors?.['min'] || ice.get('contact_number')?.errors?.['max'])"
+                                class="text-danger">
+                                Please enter valid Mobile Number.
+                              </div>
+                            </div>
+                            <div class="form-group col-lg-2 col-md-5">
+                              <input type="text" class="form-control" formControlName="preference"
+                                placeholder="Enter Preference" />
+                              <label for="preference">Preference <span class="required-asterisk">*</span></label>
+                              <div
+                                *ngIf="(isIceGroupSubmitted || ice.get('preference')?.touched) && ice.get('preference')?.errors?.['required']"
+                                class="text-danger">
+                                Preference is required.
+                              </div>
+                            </div>
+                            <div *ngIf="i != 0" class="col-lg-1 col-1 col-md-1 mb-sm-2 mb-md-2"><button
+                                class="btn btn-danger" (click)="removeIceGroup(i)">X</button>
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-center mb-2">
+                            <button class="btn btn-primary" type="button" (click)="addIceGroup()">
+                              Add Ice Details
+                            </button>
+                          </div>
+                        </div>
+                        <div class="mt-3 justify-content-between d-flex">
+                          <button matStepperPrevious class="btn btn-grey">
+                            Back
+                          </button>
+                          <button matStepperNext type="submit" class="btn btn-primary">
+                            Next
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </mat-step>
+                  <mat-step [stepControl]="thirdFormGroup">
+                    <ng-template matStepLabel>Address & University Details</ng-template>
+                    <div class="content clearfix mt-3 both-side-adding-dp-cls">
+                      <form [formGroup]="thirdFormGroup" (ngSubmit)="onSubmitThirdForm()">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <h6 class="mb-3">Enter Correspondence Address Details</h6>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_address_name"
+                              formControlName="correspondence_address_name" placeholder="Address Name">
+                            <label for="correspondence_address_name" class="form-label">Address Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_address_name'].touched) && thirdform['correspondence_address_name'].errors?.['required']"
+                              class="text-danger">
+                              Address Name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_street"
+                              formControlName="correspondence_street" placeholder="Street">
+                            <label for="street" class="form-label">Street <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_street'].touched) && thirdform['correspondence_street'].errors?.['required']"
+                              class="text-danger">
+                              Street is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_block"
+                              formControlName="correspondence_block" placeholder="Block">
+                            <label for="block" class="form-label">Block <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_block'].touched) && thirdform['correspondence_block'].errors?.['required']"
+                              class="text-danger">
+                              Block is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_building"
+                              formControlName="correspondence_building" placeholder="Building">
+                            <label for="building" class="form-label">Building <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_building'].touched) && thirdform['correspondence_building'].errors?.['required']"
+                              class="text-danger">
+                              Building is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_area"
+                              formControlName="correspondence_area" placeholder="Area">
+                            <label for="area" class="form-label">Area <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_area'].touched) && thirdform['correspondence_area'].errors?.['required']"
+                              class="text-danger">
+                              Area is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_city"
+                              formControlName="correspondence_city" placeholder="City">
+                            <label for="city" class="form-label">City <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_city'].touched) && thirdform['correspondence_city'].errors?.['required']"
+                              class="text-danger">
+                              City is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_state"
+                              formControlName="correspondence_state" placeholder="State">
+                            <label for="state" class="form-label">State <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_state'].touched) && thirdform['correspondence_state'].errors?.['required']"
+                              class="text-danger">
+                              State is required.
+                            </div>
+                          </div>
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="correspondence_country"
+                              formControlName="correspondence_country" placeholder="Country">
+                            <label for="country" class="form-label">Country <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_country'].touched) && thirdform['correspondence_country'].errors?.['required']"
+                              class="text-danger">
+                              Country is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="correspondence_pincode"
+                              formControlName="correspondence_pincode" placeholder="380059">
+                            <label for="pincode" class="form-label">Pincode <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_pincode'].touched) && thirdform['correspondence_pincode'].errors?.['required']"
+                              class="text-danger">
+                              Pincode is required.
+                            </div>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['correspondence_pincode'].touched) && thirdform['correspondence_pincode'].errors?.['pattern']"
+                              class="text-danger">
+                              Invalid Pincode. Please enter a 6-digit number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row main-permission-role-design-cls-form-check mb-3">
+                          <div class="col-lg-12">
+                            <div class="d-flex align-items-center">
+                              <h6 class="mb-0">Enter Permanent Address Details</h6>
+                              <span class="ms-2 d-flex align-items-center me-2">Same As Correspondence <input
+                                  type="checkbox" (change)="sameAsCorrespondenceAddress($event)" class="ms-2"></span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="parmanent_address_name"
+                              formControlName="parmanent_address_name" placeholder="Address Name">
+                            <label for="parmanent_address_name" class="form-label">Address Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_address_name'].touched) && thirdform['parmanent_address_name'].errors?.['required']"
+                              class="text-danger">
+                              Address Name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="street" formControlName="parmanent_street"
+                              placeholder="Street">
+                            <label for="street" class="form-label">Street <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_street'].touched) && thirdform['parmanent_street'].errors?.['required']"
+                              class="text-danger">
+                              Street is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="block" formControlName="parmanent_block"
+                              placeholder="Block">
+                            <label for="block" class="form-label">Block <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_block'].touched) && thirdform['parmanent_block'].errors?.['required']"
+                              class="text-danger">
+                              Block is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="building" formControlName="parmanent_building"
+                              placeholder="Building">
+                            <label for="building" class="form-label">Building <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_building'].touched) && thirdform['parmanent_building'].errors?.['required']"
+                              class="text-danger">
+                              Building is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="area" formControlName="parmanent_area"
+                              placeholder="Area">
+                            <label for="area" class="form-label">Area <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_area'].touched) && thirdform['parmanent_area'].errors?.['required']"
+                              class="text-danger">
+                              Area is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="city" formControlName="parmanent_city"
+                              placeholder="City">
+                            <label for="city" class="form-label">City <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_city'].touched) && thirdform['parmanent_city'].errors?.['required']"
+                              class="text-danger">
+                              City is required.
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="state" formControlName="parmanent_state"
+                              placeholder="State">
+                            <label for="state" class="form-label">State <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_state'].touched) && thirdform['parmanent_state'].errors?.['required']"
+                              class="text-danger">
+                              State is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="country" formControlName="parmanent_country"
+                              placeholder="Country">
+                            <label for="country" class="form-label">Country <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_country'].touched) && thirdform['parmanent_country'].errors?.['required']"
+                              class="text-danger">
+                              Country is required.
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="pincode" formControlName="parmanent_pincode"
+                              placeholder="380059">
+                            <label for="pincode" class="form-label">Pincode <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_pincode'].touched) && thirdform['parmanent_pincode'].errors?.['required']"
+                              class="text-danger">
+                              Pincode is required.
+                            </div>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['parmanent_pincode'].touched) && thirdform['parmanent_pincode'].errors?.['pattern']"
+                              class="text-danger">
+                              Invalid Pincode. Please enter a 6-digit number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <h6 class="mb-3">University Details</h6>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="university_name"
+                              formControlName="university_name" placeholder="University">
+                            <label for="university_name" class="form-label">University Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['university_name'].touched) && thirdform['university_name'].errors?.['required']"
+                              class="text-danger">
+                              University Name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="college" formControlName="college"
+                              placeholder="College">
+                            <label for="college" class="form-label">College <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['college'].touched) && thirdform['college'].errors?.['required']"
+                              class="text-danger">
+                              College is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="degree" formControlName="degree"
+                              placeholder="b.tech">
+                            <label for="degree" class="form-label">Degree <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['degree'].touched) && thirdform['degree'].errors?.['required']"
+                              class="text-danger">
+                              Degree is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input class="form-control" id="year_of_passing" formControlName="year_of_passing"
+                              placeholder="2022" bsDatepicker #dp="bsDatepicker" [bsConfig]="bsConfig"
+                              (keydown)="$event.preventDefault()" [maxDate]="maxDate">
+                            <label for="year_of_passing" class="form-label">Year of Passing <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['year_of_passing'].touched) && thirdform['year_of_passing'].errors?.['required']"
+                              class="text-danger">
+                              Year of Passing is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="last_organisation_name"
+                              formControlName="last_organisation_name" placeholder="Organisation Name">
+                            <label for="last_organisation_name" class="form-label">Last Organisation Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['last_organisation_name'].touched) && thirdform['last_organisation_name'].errors?.['required']"
+                              class="text-danger">
+                              Last Organisation Name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="last_organisation_contact_number"
+                              formControlName="last_organisation_contact_number" placeholder="8452015789"
+                              [min]="1000000000" [max]="9999999999" (keypress)="onPressAllowNumber($event)">
+                            <label for="last_organisation_contact_number" class="form-label">Last Organisation Contact
+                              Number <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['last_organisation_contact_number'].touched) && thirdform['last_organisation_contact_number'].errors?.['required']"
+                              class="text-danger">
+                              Last Organisation Contact Number is required.
+                            </div>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['last_organisation_contact_number'].touched) && (thirdform['last_organisation_contact_number'].errors?.['min'] || thirdform['last_organisation_contact_number'].errors?.['max'])"
+                              class="text-danger">
+                              Please enter valid Mobile Number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="reference_detail"
+                              formControlName="reference_detail" placeholder="8452015789" [min]="1000000000"
+                              [max]="9999999999" (keypress)="onPressAllowNumber($event)">
+                            <label for="reference_detail" class="form-label">Reference Contact Detail <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['reference_detail'].touched) && thirdform['reference_detail'].errors?.['required']"
+                              class="text-danger">
+                              Reference Detail is required.
+                            </div>
+                            <div
+                              *ngIf="(isThirdFormSubmitted || thirdform['reference_detail'].touched) && (thirdform['reference_detail'].errors?.['min'] || thirdform['reference_detail'].errors?.['max'])"
+                              class="text-danger">
+                              Please enter valid Mobile Number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-3 justify-content-between d-flex">
+                          <button matStepperPrevious class="btn btn-grey">
+                            Back
+                          </button>
+                          <button matStepperNext type="submit" class="btn btn-primary">
+                            Next
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </mat-step>
+                  <mat-step [stepControl]="fourthFormGroup">
+                    <ng-template matStepLabel>Bank Details</ng-template>
+                    <div class="content clearfix mt-3 both-side-adding-dp-cls">
+                      <form [formGroup]="fourthFormGroup" (ngSubmit)="onSubmitFourthForm()">
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="account_holder_name"
+                              formControlName="account_holder_name" placeholder="Bank Number">
+                            <label for="account_holder_name" class="form-label">Account Holder Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['account_holder_name'].touched) && fourthform['account_holder_name'].errors?.['required']"
+                              class="text-danger">
+                              Account holder name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="salary_account_number"
+                              formControlName="salary_account_number" placeholder="Salary Account Number">
+                            <label for="salary_account_number" class="form-label">Salary Account Number <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['salary_account_number'].touched) && fourthform['salary_account_number'].errors?.['required']"
+                              class="text-danger">
+                              Salary Account Number is required.
+                            </div>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['salary_account_number'].touched) && ( fourthform['salary_account_number'].errors?.['min'] || fourthform['salary_account_number'].errors?.['max'] )"
+                              class="text-danger">
+                              Enter a valid Salary Account Number.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="text" class="form-control" id="bank_name" formControlName="bank_name"
+                              placeholder="Bank Name">
+                            <label for="bank_name" class="form-label">Bank Name <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['bank_name'].touched) && fourthform['bank_name'].errors?.['required']"
+                              class="text-danger">
+                              Bank Name is required.
+                            </div>
+                          </div>
+
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input #ifsc type="text" class="form-control" id="ifsc_code" formControlName="ifsc_code"
+                              placeholder="IFSC Code" (input)="ifsc.value = ifsc.value.toUpperCase() ">
+                            <label for="ifsc_code" class="form-label">IFSC Code <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['ifsc_code'].touched) && fourthform['ifsc_code'].errors?.['required']"
+                              class="text-danger">
+                              IFSC Code is required.
+                            </div>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['ifsc_code'].touched) && fourthform['ifsc_code'].errors?.['pattern']"
+                              class="text-danger">
+                              Enter a valid IFSC Code.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="form-group col-lg-6 col-md-6">
+                            <input type="number" class="form-control" id="uan_number" formControlName="uan_number"
+                              placeholder="UAN Number">
+                            <label for="uan_number" class="form-label">UAN Number <span
+                                class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isFourthFormSubmitted || fourthform['uan_number'].touched) && fourthform['uan_number'].errors?.['required']"
+                              class="text-danger">
+                              UAN Number is required.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-3 justify-content-between d-flex">
+                          <button matStepperPrevious class="btn btn-grey">
+                            Back
+                          </button>
+                          <button matStepperNext type="submit" class="btn btn-primary">
+                            Next
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </mat-step>
+                  <mat-step>
+                    <ng-template matStepLabel>Document Upload</ng-template>
+                    <div class="content clearfix mt-3 edit-profile-edit-here-only-cls-add">
+                      <form [formGroup]="fifthFormGroup" (ngSubmit)="onSubmitFifthForm()">
+                        <div formArrayName="document">
+                          <div class="col-lg-12" *ngFor="let document of documents().controls; let i=index">
+                            <h6> Enter {{document.get('name')?.value | titlecase }} details</h6>
+                            <div class="row spacing-side-out-here" [formGroupName]="i">
+                              <div class="form-group col-lg-4 my-auto col-md-12">
+                                <input type="text" formControlName="details" placeholder="Enter Details"
+                                  class="form-control">
+                                <label> {{document.get('name')?.value | titlecase}} Number </label>
+                                <div class="text-danger"
+                                  *ngIf="(isFifthFormSubmitted || document.get('details')?.touched) && document.get('details')?.errors?.['required']">
+                                  {{document.get('name')?.value | titlecase}} number is required
+                                </div>
+                              </div>
+                              <div class="form-group col-lg-4 selection-label-reverse-edits-audits col-md-12">
+                                <ngx-dropzone [id]="'dropzone'+'front'+i" class="form-control"
+                                  (change)="onPreviewFileSelect($event,document,'front')"
+                                  accept=".png, .jpg, .jpeg, application/pdf" #dropzone [multiple]="false">
+                                  <ngx-dropzone-label *ngIf="!document.get('front')?.value">
+                                    <div>
+                                      <h2>
+                                        Please Select
+                                        {{
+                                        document.get("name")?.value
+                                        | titlecase
+                                        }}
+                                        File
+                                      </h2>
+                                    </div>
+                                  </ngx-dropzone-label>
+                                  <img *ngIf="
+                                      document.get('front')?.value &&
+                                      getFileExtension(
+                                        document.get('front')?.value
+                                      ) == 'img'
+                                    " [src]="document.get('front')?.value" alt="" />
+                                  <img *ngIf="
+                                      document.get('front')?.value &&
+                                      getFileExtension(
+                                        document.get('front')?.value
+                                      ) == 'pdf'
+                                    " src="assets/img/pdf-icon.png" alt="" height="130" width="110"
+                                    style="margin: auto" />
+                                </ngx-dropzone>
+                                <label>
+                                  Front File
+                                </label>
+                                <div class="text-danger"
+                                  *ngIf="isFifthFormSubmitted && document.get('front')?.errors?.['required']">
+                                  Front file is required
+                                </div>
+                                <button *ngIf="document.get('front')?.value"
+                                  class="btn btn-danger mt-2 danger-filled-btn-cls-add" (click)="
+                                    removeUploadedFile(document, 'front')
+                                  ">
+                                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    version="1.1" x="0px" y="0px" viewBox="0 0 500 625"
+                                    enable-background="new 0 0 500 500" xml:space="preserve" width="47" height="42">
+                                    <g>
+                                      <g>
+                                        <path
+                                          d="M406,250.4c-0.3,64.7-41.4,124.8-102.6,146.9c-31,11.2-64.9,12.5-96.6,3.5c-30.5-8.7-57.6-26.7-77.9-51    C86.8,299.3,82,225.1,116,169.2c33.6-55.4,100.3-85.1,164-72.3c64.1,12.9,114,65.2,124.3,129.8C405.5,234.5,406,242.5,406,250.4    c0.1,12.9,20.1,12.9,20,0c-0.3-73.7-47-140.2-116.1-165.7c-68.8-25.4-149.5-3.5-196,53.2c-23.2,28.3-37.2,62.8-40.1,99.3    c-2.9,36.3,6,73.4,24.9,104.6c38.5,63.4,114,96.1,186.6,81.4C356,408.8,413,349.3,423.8,278c1.4-9.2,2.2-18.3,2.2-27.6    C426,237.5,406,237.5,406,250.4z" />
+                                      </g>
+                                    </g>
+                                    <g>
+                                      <g>
+                                        <g>
+                                          <path
+                                            d="M160.2,174.3c18.6,18.6,37.3,37.3,55.9,55.9c29.7,29.7,59.4,59.4,89.1,89.1c6.8,6.8,13.6,13.6,20.4,20.4     c9.1,9.1,23.3-5,14.1-14.1c-18.6-18.6-37.3-37.3-55.9-55.9c-29.7-29.7-59.4-59.4-89.1-89.1c-6.8-6.8-13.6-13.6-20.4-20.4     C165.2,151.1,151.1,165.2,160.2,174.3L160.2,174.3z" />
+                                        </g>
+                                      </g>
+                                      <g>
+                                        <g>
+                                          <path
+                                            d="M174.3,339.8c18.6-18.6,37.3-37.3,55.9-55.9c29.7-29.7,59.4-59.4,89.1-89.1c6.8-6.8,13.6-13.6,20.4-20.4     c9.1-9.1-5-23.3-14.1-14.1c-18.6,18.6-37.3,37.3-55.9,55.9c-29.7,29.7-59.4,59.4-89.1,89.1c-6.8,6.8-13.6,13.6-20.4,20.4     C151.1,334.8,165.2,348.9,174.3,339.8L174.3,339.8z" />
+                                        </g>
+                                      </g>
+                                    </g>
+                                  </svg>
+                                </button>
+                                <button type="button" *ngIf="
+                                    document.get('front')?.value &&
+                                    getFileExtension(
+                                      document.get('front')?.value
+                                    ) == 'pdf'
+                                  " class="btn btn-primary ms-2 mt-2 danger-filled-btn-cls-add">
+                                  <a href="{{ document.get('front')?.value }}" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" x="0px" y="0px"
+                                      width="47" height="42">
+                                      <g>
+                                        <path
+                                          d="M24,8C9.53,8,2.39,22.94,2.09,23.58v.84C2.39,25.06,9.53,40,24,40S45.61,25.06,45.91,24.42v-.84C45.61,22.94,38.47,8,24,8Zm0,30C12.11,38,5.38,26.38,4.12,24c1.25-2.39,8-14,19.88-14S42.62,21.62,43.88,24C42.63,26.38,35.91,38,24,38Z" />
+                                        <path
+                                          d="M24,13A11,11,0,1,0,35,24,11,11,0,0,0,24,13Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,24,33Z" />
+                                        <path
+                                          d="M24,18a6,6,0,1,0,6,6A6,6,0,0,0,24,18Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,24,28Z" />
+                                      </g>
+                                    </svg>
+                                  </a>
+                                </button>
+                              </div>
+                              <div class="form-group col-lg-4 selection-label-reverse-edits-audits col-md-12"
+                                *ngIf="document.get('back')">
+                                <ngx-dropzone [id]="'dropzone'+'back'+i" class="form-control"
+                                  (change)="onPreviewFileSelect($event,document,'back')"
+                                  accept=".png, .jpg, .jpeg, application/pdf" #dropzone [multiple]="false">
+                                  <ngx-dropzone-label *ngIf="!document.get('back')?.value">
+                                    <div>
+                                      <h2>
+                                        Please Select
+                                        {{
+                                        document.get("name")?.value
+                                        | titlecase
+                                        }}
+                                        File
+                                      </h2>
+                                    </div>
+                                  </ngx-dropzone-label>
+                                  <img *ngIf="
+                                      document.get('back')?.value &&
+                                      getFileExtension(
+                                        document.get('back')?.value
+                                      ) == 'img'
+                                    " [src]="document.get('back')?.value" alt="" />
+                                  <img *ngIf="
+                                      document.get('back')?.value &&
+                                      getFileExtension(
+                                        document.get('back')?.value
+                                      ) == 'pdf'
+                                    " src="assets/img/pdf-icon.png" alt="" height="130" width="110"
+                                    style="margin: auto" />
+                                </ngx-dropzone>
+                                <label>
+                                  Back File
+                                </label>
+                                <div class="text-danger"
+                                  *ngIf="isFifthFormSubmitted && document.get('back')?.errors?.['required']">
+                                  Back file is required
+                                </div>
+                                <button *ngIf="document.get('back')?.value"
+                                  class="btn btn-danger mt-2 danger-filled-btn-cls-add"
+                                  (click)="removeUploadedFile(document, 'back')">
+                                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    version="1.1" x="0px" y="0px" viewBox="0 0 500 625"
+                                    enable-background="new 0 0 500 500" xml:space="preserve" width="47" height="42">
+                                    <g>
+                                      <g>
+                                        <path
+                                          d="M406,250.4c-0.3,64.7-41.4,124.8-102.6,146.9c-31,11.2-64.9,12.5-96.6,3.5c-30.5-8.7-57.6-26.7-77.9-51    C86.8,299.3,82,225.1,116,169.2c33.6-55.4,100.3-85.1,164-72.3c64.1,12.9,114,65.2,124.3,129.8C405.5,234.5,406,242.5,406,250.4    c0.1,12.9,20.1,12.9,20,0c-0.3-73.7-47-140.2-116.1-165.7c-68.8-25.4-149.5-3.5-196,53.2c-23.2,28.3-37.2,62.8-40.1,99.3    c-2.9,36.3,6,73.4,24.9,104.6c38.5,63.4,114,96.1,186.6,81.4C356,408.8,413,349.3,423.8,278c1.4-9.2,2.2-18.3,2.2-27.6    C426,237.5,406,237.5,406,250.4z" />
+                                      </g>
+                                    </g>
+                                    <g>
+                                      <g>
+                                        <g>
+                                          <path
+                                            d="M160.2,174.3c18.6,18.6,37.3,37.3,55.9,55.9c29.7,29.7,59.4,59.4,89.1,89.1c6.8,6.8,13.6,13.6,20.4,20.4     c9.1,9.1,23.3-5,14.1-14.1c-18.6-18.6-37.3-37.3-55.9-55.9c-29.7-29.7-59.4-59.4-89.1-89.1c-6.8-6.8-13.6-13.6-20.4-20.4     C165.2,151.1,151.1,165.2,160.2,174.3L160.2,174.3z" />
+                                        </g>
+                                      </g>
+                                      <g>
+                                        <g>
+                                          <path
+                                            d="M174.3,339.8c18.6-18.6,37.3-37.3,55.9-55.9c29.7-29.7,59.4-59.4,89.1-89.1c6.8-6.8,13.6-13.6,20.4-20.4     c9.1-9.1-5-23.3-14.1-14.1c-18.6,18.6-37.3,37.3-55.9,55.9c-29.7,29.7-59.4,59.4-89.1,89.1c-6.8,6.8-13.6,13.6-20.4,20.4     C151.1,334.8,165.2,348.9,174.3,339.8L174.3,339.8z" />
+                                        </g>
+                                      </g>
+                                    </g>
+                                  </svg>
+                                </button>
+                                <button type="button" *ngIf="
+                                    document.get('back')?.value &&
+                                    getFileExtension(
+                                      document.get('back')?.value
+                                    ) == 'pdf'
+                                  " class="btn btn-primary ms-2 mt-2 danger-filled-btn-cls-add">
+                                  <a href="{{ document.get('back')?.value }}" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" x="0px" y="0px"
+                                      width="47" height="42">
+                                      <g>
+                                        <path
+                                          d="M24,8C9.53,8,2.39,22.94,2.09,23.58v.84C2.39,25.06,9.53,40,24,40S45.61,25.06,45.91,24.42v-.84C45.61,22.94,38.47,8,24,8Zm0,30C12.11,38,5.38,26.38,4.12,24c1.25-2.39,8-14,19.88-14S42.62,21.62,43.88,24C42.63,26.38,35.91,38,24,38Z" />
+                                        <path
+                                          d="M24,13A11,11,0,1,0,35,24,11,11,0,0,0,24,13Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,24,33Z" />
+                                        <path
+                                          d="M24,18a6,6,0,1,0,6,6A6,6,0,0,0,24,18Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,24,28Z" />
+                                      </g>
+                                    </svg>
+                                  </a>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-center" *ngIf="documents().controls.length == 0">
+                            <h6>No Documents are required</h6>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="mt-3 col-12 justify-content-between d-flex">
+                            <button matStepperPrevious class="btn btn-grey">
+                              Back
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                              Submit
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </mat-step>
+                </mat-stepper>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

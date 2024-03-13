@@ -1,0 +1,137 @@
+<app-page-header [title]="'Fee Category Master'" [items]="['Fee Category Master']"
+  [active_item]="'Fee Category Master'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Fees Category List</h4>
+        </div>
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              ((keypress))="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('name')">
+                  Fee Category
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('isActive')">
+                  Status
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'isActive' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'isActive' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="feeCategoryList.length">
+              <tr *ngFor="let item of feeCategoryList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.name | titlecase }}</td>
+                <td>{{ item.isActive ? "Active" : "In Active" }}</td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i (click)="deleteFeecategory(item._id)" class="fas fa-trash"></i>
+                    <i (click)="editFeeCategory(item)" class="fas fa-edit"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!feeCategoryList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #FeeCategory>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Record</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addFeeCategoryForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-6">
+          <input type="text" class="form-control" placeholder="Enter Fee Category Name" formControlName="name" />
+          <label>
+            Fees Category Name<span class="required-asterisk">*</span></label>
+          <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']" class="text-danger">
+            Fees Category Name is required.
+          </div>
+        </div>
+
+        <div class="form-group col-6 selection-label-reverse">
+          <label>Status <span class="required-asterisk">*</span></label>
+
+          <select class="form-control" formControlName="status">
+            <option value="true">Active</option>
+            <option value="false">In Active</option>
+          </select>
+          <div *ngIf="(isSubmitted || form['status'].touched) && form['status'].errors?.['required']"
+            class="text-danger">
+            Status is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

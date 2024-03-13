@@ -1,0 +1,104 @@
+<div class="card-footer py-0">
+  <div class="profile-tab tab-menu-heading border-bottom-0">
+    <nav ngbNav #nav="ngbNav" class="main-nav-line p-0 tabs-menu profile-nav-line border-0 br-5 mb-0">
+      <!-- <ng-container ngbNavItem>
+          <a ngbNavLink class="mb-2 mt-2">About</a> -->
+      <div class="main-content-body tab-pane">
+        <div class="card">
+          <div class="card-body p-0 border-0 p-0 rounded-10 edit-profile-edit-here-only-cls-add">
+            <div class="p-4">
+              <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="form-editing-placeholderlcls-add">
+                <div class="col-3"></div>
+                <div class="form-group col-lg-7 col-12 m-auto upload-profile-pics-cls-add selection-label-reverse-edit">
+                  <label class="d-flex justify-content-center" *ngIf="isEdit">
+                    Logo
+                  </label>
+                  <ngx-dropzone id="dropzone" class="form-control" (change)="onPreviewFileSelect($event)"
+                    accept=".png, .jpg, .jpeg" #dropzone [multiple]="false">
+                    <ngx-dropzone-label *ngIf="!imgUrl">
+                      <div>
+                        <h2>Please Select Logo</h2>
+                      </div>
+                    </ngx-dropzone-label>
+                    <img *ngIf="imgUrl && !isImgEdit" [src]="imgUrl" alt="" />
+                    <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of filesPreview"
+                      [file]="f" [removable]="true" (removed)="onPreviewFileRemove(f)">
+                    </ngx-dropzone-image-preview>
+                  </ngx-dropzone>
+                  <div class="text-danger" *ngIf="isImageSelected">
+                    Please select logo
+                  </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-12" *ngIf="this.userRole == 1">
+                  <input id="name" formControlName="name" type="text" class="form-control" placeholder="Name" />
+                  <label>Name <span class="required-asterisk">*</span></label>
+                  <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']"
+                    class="text-danger">
+                    Name is required.
+                  </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                  <input type="text" id="first_name" class="form-control" formControlName="first_name"
+                    placeholder="First Name" />
+                  <label for="first_name">First Name <span class="required-asterisk">*</span></label>
+                  <div *ngIf="(isSubmitted || form['first_name'].touched) && form['first_name'].errors?.['required']"
+                    class="text-danger">
+                    First Name is required.
+                  </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                  <input type="text" id="middle_name" class="form-control" formControlName="middle_name"
+                    placeholder="Middle Name" />
+                  <label for="middle_name">Middle Name</label>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                  <input type="text" id="last_name" class="form-control" formControlName="last_name"
+                    placeholder="Last Name" />
+                  <label for="last_name">Last Name <span class="required-asterisk">*</span></label>
+                  <div *ngIf="(isSubmitted || form['last_name'].touched) && form['last_name'].errors?.['required']"
+                    class="text-danger">
+                    Last Name is required.
+                  </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-12">
+                  <input type="text" class="form-control" placeholder="Enter mobile number" formControlName="mobile"
+                    [min]="1000000000" [max]="9999999999" (keypress)="onPressAllowNumber($event)" />
+                  <label>Mobile number</label>
+                  <div *ngIf="(isSubmitted || form['mobile'].touched) && form['mobile'].errors?.['required']"
+                    class="text-danger">
+                    Mobile number is required.<span class="required-asterisk">*</span>
+                  </div>
+                  <div
+                    *ngIf="(isSubmitted || form['mobile'].touched) && form['mobile'].errors?.['min'] || form['mobile'].errors?.['max']"
+                    class="text-danger">
+                    Please enter valid Mobile Number.
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary ms-md-4 ms-0 mb-2">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<ng-template #imageCropper>
+  <div class="modal-header">
+    <h4 class="modal-title">Crop Image</h4>
+    <button type="button" class="close" aria-label="Close" (click)="imagemodalReference.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body d-flex align-items-center">
+    <image-cropper [imageFile]="imageChangedEvent" [maintainAspectRatio]="false"
+      (imageCropped)="imageCropped($event)"></image-cropper>
+  </div>
+  <div class="modal-footer d-flex justify-content-center">
+    <button class="btn btn-primary" (click)="onSave()">Save</button>
+  </div>
+</ng-template>

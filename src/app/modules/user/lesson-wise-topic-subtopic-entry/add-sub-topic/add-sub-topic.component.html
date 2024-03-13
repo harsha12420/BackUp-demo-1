@@ -1,0 +1,128 @@
+<app-page-header [title]="'Add Subtopic'" [items]="['Add Subtopic']" [active_item]="'Add Subtopic'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add Subtopic</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="subTopicForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="form-group col-6 selection-label-reverse">
+              <input type="text" class="form-control" placeholder="Topic Name" formControlName="name"
+                [readonly]="true" />
+              <label>Topic Name <span class="required-asterisk">*</span></label>
+              <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']"
+                class="text-danger">
+                Topic Name is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <input type="number" class="form-control" placeholder="Topic Name" formControlName="version_no"
+                [readonly]="true" />
+              <label>Version No <span class="required-asterisk">*</span></label>
+              <div *ngIf="(isSubmitted || form['version_no'].touched) && form['version_no'].errors?.['required']"
+                class="text-danger">
+                Version No is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Medium <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="medium($event)" formControlName="medium" [clearable]="false"
+                [readonly]="true">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['medium'].touched) && form['medium'].errors?.['required']"
+                class="text-danger">
+                Medium is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Subject <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="subject($event)" formControlName="subject"
+                [clearable]="false" [readonly]="true">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of subjectList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['subject'].touched) && form['subject'].errors?.['required']"
+                class="text-danger">
+                Subject is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Standard <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="standard($event)" formControlName="standard"
+                [clearable]="false" [readonly]="true">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['standard'].touched) && form['standard'].errors?.['required']"
+                class="text-danger">
+                Standard is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Lesson <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="lesson($event)" formControlName="lesson" [clearable]="false"
+                [readonly]="true">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of lessonList">
+                  {{ Data.lesson }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['lesson'].touched) && form['lesson'].errors?.['required']"
+                class="text-danger">
+                Lesson is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" formArrayName="subtopics">
+            <div *ngFor="let subtopics of getSubTopicsControl(); let i = index">
+              <div class="row blocking-responsive all-side-less" formGroupName="{{i}}">
+                <div class="form-group selection-label-reverse col-4">
+                  <input type="text" class="form-control" placeholder="Topic Name" formControlName="name" />
+                  <label>Topic Name <span class="required-asterisk">*</span></label>
+                  <span
+                    *ngIf="(isSubmitted || subtopics.get('name')?.touched) && subtopics.get('name')?.hasError('required')"
+                    class="text-danger position-set">
+                    Topic Name is required.
+                  </span>
+                </div>
+                <div class="form-group selection-label-reverse width-custom-add col-4">
+                  <input type="number" class="form-control" placeholder="Version No" formControlName="version_no" />
+                  <label>Version No <span class="required-asterisk">*</span></label>
+                  <span
+                    *ngIf="(isSubmitted || subtopics.get('version_no')?.touched) && subtopics.get('version_no')?.hasError('required')"
+                    class="text-danger position-set">
+                    Version No is required.
+                  </span>
+                </div>
+                <div class="form-group col-2 text-end w-100 set-cls-add-grid">
+                  <button class="btn btn-danger all-cls-top" type="button" (click)="removeSubTopic(i)">
+                    <span class="cross-cls-svg-added">
+                      <i class="fas fa-times"></i>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary mb-0 mx-auto text-center" type="button" (click)="addSubTopic()">Add
+                Subtopic</button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-3 mb-0">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

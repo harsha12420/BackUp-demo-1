@@ -1,0 +1,154 @@
+<app-page-header [title]="'Topic Wise LO'" [items]="['Topic Wise LO']"
+  [active_item]="'Add Topic Wise LO'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add Topic Wise LO</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="topicWiseloForm" (ngSubmit)="onSubmit()">
+
+
+
+          <div class="row">
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Medium <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="medium($event)" formControlName="medium" [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['medium'].touched) && form['medium'].errors?.['required']"
+                class="text-danger">
+                Medium is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Subject <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="subject($event)" formControlName="subject"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of subjectList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['subject'].touched) && form['subject'].errors?.['required']"
+                class="text-danger">
+                Subject is required.
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="form-group col-4 selection-label-reverse">
+              <label>Select Standard <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="standard($event)" formControlName="standard"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['standard'].touched) && form['standard'].errors?.['required']"
+                class="text-danger">
+                Standard is required.
+              </div>
+            </div>
+            <div class="form-group col-4 selection-label-reverse">
+              <label>Select Lesson <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="lesson($event)" formControlName="lesson" [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of lessonList">
+                  {{ Data.lesson }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['lesson'].touched) && form['lesson'].errors?.['required']"
+                class="text-danger">
+                Lesson is required.
+              </div>
+            </div>
+            <div class="form-group col-4 selection-label-reverse">
+              <label>Topic Wise LO Status <span class="required-asterisk">*</span></label>
+              <select class="form-control" formControlName="status">
+                <option value="true">Active</option>
+                <option value="false">In Active</option>
+              </select>
+              <div *ngIf="(isSubmitted || form['status'].touched) && form['status'].errors?.['required']"
+                class="text-danger">
+                Topic Wise LO Status is required.
+              </div>
+            </div>
+          </div>
+
+
+          <div class="form-group" formArrayName="topics">
+            <div *ngFor="let topicGroup of topics().controls; let i = index">
+              <div class="row" [formGroupName]="i">
+                <div class="form-group selection-label-reverse col-lg-2  col-md-6">
+                  <label>Select Topic <span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" (change)="topic($event)" formControlName="topic_id"
+                    [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of topicList">
+                      {{ Data.topic_name }}
+                    </ng-option>
+                  </ng-select>
+                  <div
+                    *ngIf="(isSubmitted || topicGroup.get('topic_id')?.touched) && topicGroup.get('topic_id')?.hasError('required')"
+                    class="text-danger">
+                    Topic is required.
+                  </div>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-2  col-md-6">
+                  <label>Select sub topic</label>
+                  <ng-select id="inputGroupSelect01" formControlName="sub_topic_id" [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of subTopicList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-3  col-md-6">
+                  <label>LO Level <span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" formControlName="lo_level_id" [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of loList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                  <div
+                    *ngIf="(isSubmitted || topicGroup.get('lo_level_id')?.touched) && topicGroup.get('lo_level_id')?.hasError('required')"
+                    class="text-danger">
+                    LO level is required.
+                  </div>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-3  col-md-6">
+                  <input type="text" class="form-control" placeholder="LO Details" formControlName="name" />
+                  <label>LO Details <span class="required-asterisk">*</span></label>
+                  <div
+                    *ngIf="(isSubmitted || topicGroup.get('name')?.touched) && topicGroup.get('name')?.hasError('required')"
+                    class="text-danger">
+                    LO Details is required.
+                  </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-sm-2 mb-md-2">
+                  <button class="btn btn-danger w-100" (click)="removeTopic(i)"><span class="cross-cls-svg-added">
+                    <i class="fas fa-times"></i>
+                  </span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <button class="btn btn-primary mb-0 mx-auto text-center" type="button" (click)="addTopic()">Add LO</button>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-3 mb-0">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

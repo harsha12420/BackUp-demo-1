@@ -1,0 +1,390 @@
+<app-page-header [title]="'Roll No'" [items]="['Roll No']" [active_item]="'UPDATE ROLL NUMBER'"></app-page-header>
+
+<div class="row row-sm">
+    <div class="col-xl-12">
+      <div class="card add-staff-here-update-cls">
+        <div class="card-header pb-0 same-for-all-select-component-cls-adding">
+          <div class="d-flex justify-content-between blocking-responsive">
+            <h4 class="card-title mg-b-0">Update Roll Number</h4>
+          </div>
+          <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+            <div class="reportiong-framework-btn-cls-add spacing-down-side export-btn-cls-add">
+              <select #exportUnanswer (change)="exportAll(exportUnanswer.value,'StudentUpdateOperation')">
+                <option value="null " selected disabled>Export</option>
+                <option value="pdf">Export to Pdf</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-8 ps-2">
+              <div class="row ms-2">
+                <div class=" me-3 ">
+                  <label>Medium <span class="required-asterisk">*</span></label>
+                  <ng-select (change)="mediumSelect($event)" >
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div class=" me-3 ">
+                  <label>Standard <span class="required-asterisk">*</span></label>
+                  <ng-select (change)="standardSelect($event)">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div class="">
+                  <label>Division <span class="required-asterisk">*</span></label>
+                  <ng-select (change)="divisionSelect($event)">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of divisionList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="col-4 pe-3 text-end">
+              <button class="btn btn-primary " >
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-search"></i></span>Search
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Student Name
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Current Roll No
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    New Roll No
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'lo_level_name' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col">  Update & Cancel</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="updateRollNo.length">
+                <tr *ngFor="let item of updateRollNo; let i = index">
+                  <th scope="row">
+                    {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                  </th>
+             <td>
+              {{item.firstName+item.middleName+item.lastName |titlecase}}
+             </td>
+             <td>
+              {{item.new_roll_number ? item.new_roll_number : '-'}}
+             </td>
+             <td>
+              <div>
+                <form [formGroup]="rollNoUpdateForm" >
+                  <input type="number" formControlName="newRollNo" class="form-control">
+                </form>
+              </div>
+             </td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                      <button class="btn btn-primary me-2" (click)="onSubmit(item)">
+                        <span class="add-ics-cls-proper-adding"></span>Update
+                      </button>
+                      <button class="btn btn-primary " >
+                        <span class="add-ics-cls-proper-adding"></span>Cancel
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="!updateRollNo.length">
+                <tr>
+                  <td colspan="14" class="text-center">No Data Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+            <div class="d-flex align-items-center">
+              <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option [value]="totalItems">All</option>
+              </select>
+              <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+            </div>
+            <ngb-pagination [collectionSize]="totalItems" [pageSize]="pageLimit" [(page)]="currentPage"
+              aria-label="Default pagination" [maxSize]="5" [rotate]="true" (pageChange)="onPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+    <div class="col-xl-12">
+      <div class="card add-staff-here-update-cls">
+        <div class="card-header pb-0 same-for-all-select-component-cls-adding">
+          <div class="d-flex justify-content-between blocking-responsive">
+            <h4 class="card-title mg-b-0">Update Roll Number</h4>
+          </div>
+          <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+            <div class="reportiong-framework-btn-cls-add spacing-down-side export-btn-cls-add">
+              <select #exportUnanswerUpdateOne (change)="exportAll(exportUnanswerUpdateOne.value,'studentUpdateList')">
+                <option value="null " selected disabled>Export</option>
+                <option value="pdf">Export to Pdf</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Medium
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Standard
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Division
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Student Name
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    Old Roll No
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('lo_level_name')">
+                    New Roll No
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && isAscending
+                                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                                          'arrow-color':
+                                            orderBy === 'lo_level_name' && !isAscending
+                                        }"></span>
+                    </div>
+                  </th>   
+                  <th scope="col"> Acttion</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="list.length">
+                <tr *ngFor="let item of list; let i = index">
+                  <th scope="row">
+                    {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                  </th>
+                  <td>
+                    {{item.medium}}
+                  </td>
+                  <td>
+                    {{item.standard}}
+                  </td>
+                  <td>
+                    {{item.division}}
+                  </td>
+                  <td>
+                    {{item.firstName+item.middleName +item.lastName|titlecase}}
+                  </td>
+                  <td>
+                    {{item.old_roll_number? item.old_roll_number :'-'}}
+                  </td>
+                  <td>
+                    {{item.new_roll_number}}
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                      <i class="fas fa-edit"(click)="editRollno(item)"></i>
+                      <i class="fas fa-trash"></i>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="!list.length">
+                <tr>
+                  <td colspan="14" class="text-center">No Data Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+            <div class="d-flex align-items-center">
+              <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option [value]="totalItems">All</option>
+              </select>
+              <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+            </div>
+            <ngb-pagination [collectionSize]="totalItems" [pageSize]="pageLimit" [(page)]="currentPage"
+              aria-label="Default pagination" [maxSize]="5" [rotate]="true" (pageChange)="onPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+    
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #RollnoUpdate>
+    <div class="modal-header">
+      <h4 class="modal-title">Update Roll No</h4>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        (click)="onModalClose()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="addingpd-in-table-cls-add">
+        <form [formGroup]="rollNoUpdateForm" (ngSubmit)="onSubmitForm()">
+          <div class="row">
+            <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+              <label>Medium <span class="required-asterisk">*</span></label>
+              <ng-select formControlName="medium"  aria-readonly="true"  [class.disabled]="true" >
+                <ng-option [value]="Data.id " *ngFor="let Data of mediumList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <!-- <div *ngIf="(isSubmitted || form['medium'].touched) && form['medium'].errors?.['required']" class="text-danger">
+                Medium is required.
+              </div> -->
+            </div>
+            <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+              <label>Standard <span class="required-asterisk">*</span></label>
+              <ng-select  formControlName="standard"  aria-readonly="true" [class.disabled]="true">
+                <ng-option [value]="Data.id" *ngFor="let Data of standardList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <!-- <div *ngIf="(isSubmitted || form['standard'].touched) && form['standard'].errors?.['required']" class="text-danger">
+                Standard is required.
+              </div> -->
+            </div>
+            <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+              <label>Division <span class="required-asterisk">*</span></label>
+              <ng-select  formControlName="division"  aria-readonly="true" [class.disabled]="true">
+                <ng-option [value]=" Data.id" *ngFor="let Data of divisionList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <!-- <div *ngIf="(isSubmitted || form['division'].touched) && form['division'].errors?.['required']" class="text-danger">
+                Division is required.
+              </div> -->
+            </div>
+            <div class="form-group col-lg-6 col-md-6">
+              <input type="text"  class="form-control" formControlName="roll_number"
+                placeholder="Current Roll Number" readonly/>
+              <label for="roll_number">Current Roll Number<span class="required-asterisk">*</span></label>
+            </div>
+            <div class="form-group col-lg-6 col-md-6">
+              <input type="number" id="new_roll_number" class="form-control" formControlName="new_roll_number"
+                placeholder="New Roll Number" />
+              <label for="new_roll_number">New Roll Number<span class="required-asterisk">*</span></label>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-3 me-3 mb-0" (click)="onSubmitForm()">Update</button>
+            <button type="reset" class="btn btn-primary mt-3 mb-0" (click)="resetFormData()">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-template>

@@ -1,0 +1,414 @@
+<app-page-header
+  [title]="' LC Approval'"
+  [items]="[' LC Approval']"
+  [active_item]="'Add  LC Approval'"
+></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">LC Approval List</h4>
+        </div>
+
+        <div
+          class="d-flex blocking-responsive justify-content-end align-items-center mt-2"
+        >
+          <div class="d-flex spacing-down-side position-relative">
+            <input
+              class="form-control me-2 ms-1"
+              type="text"
+              placeholder="Search..."
+              [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()"
+            />
+            <div class="set-position-auto-cls-adding">
+              <i
+                class="fas fa-search"
+                [ngClass]="{ 'hide-icon': searchString }"
+              ></i>
+              <i
+                class="far fa-times-circle"
+                (click)="onClear()"
+                [ngClass]="{ 'show-icon': searchString }"
+              ></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button
+                class="btn btn-primary spacing-left"
+                (click)="onModalOpen()"
+              >
+                <span class="add-ics-cls-proper-adding"
+                  ><i class="fas fa-plus"></i></span
+                >Approval
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table
+            summary="table"
+            class="table mg-b-0 text-md-nowrap table-striped table-hover"
+          >
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('id')">
+                  LC Application Number
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'id' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'id' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('school_id')">
+                  Student ID
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'school_id' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'school_id' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('student_name')">
+                  Student Name
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'student_name' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'student_name' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('name')">
+                  Admin
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('fee_total_amount')">
+                  Total Fees
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_total_amount' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_total_amount' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('fee_paid_amount')">
+                  Paid Fees
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_paid_amount' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_paid_amount' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('fee_due_amount')">
+                  Due Fees
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_due_amount' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'fee_due_amount' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('is_approve')">
+                  Approval
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'is_approve' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'is_approve' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <!-- <th scope="col">Action</th> -->
+              </tr>
+            </thead>
+            <tbody *ngIf="lcApprovalList.length">
+              <tr *ngFor="let item of lcApprovalList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.lcApplication._id }}</td>
+                <td>{{ item.lcApplication.student_id | titlecase }}</td>
+                <td>
+                  {{
+                    item.lcApplication.studentdetails.first_name +
+                      " " +
+                      item.lcApplication.studentdetails.middle_name +
+                      " " +
+                      item.lcApplication.studentdetails.last_name
+                  }}
+                </td>
+
+                <td>
+                  {{
+                    item.lcApplication.first_name +
+                      " " +
+                      item.lcApplication.middle_name +
+                      " " +
+                      item.lcApplication.last_name
+                  }}
+                </td>
+
+                <td>{{ item.lcApplication.fee_total_amount }}</td>
+                <td>{{ item.lcApplication.fee_paid_amount }}</td>
+
+                <td>{{ item.lcApplication.fee_due_amount }}</td>
+                <td>{{ item.lcApplication.is_approve }}</td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!lcApprovalList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select
+              class="records-select"
+              [(ngModel)]="pageLimit"
+              name=""
+              id=""
+              (change)="onPageChange(1)"
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination
+            [collectionSize]="totalItems"
+            [maxSize]="5"
+            [rotate]="true"
+            [pageSize]="pageLimit"
+            [(page)]="currentPage"
+            aria-label="Default pagination"
+            (pageChange)="onPageChange($event)"
+          >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #lcApproval>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} LC Approval</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="onModalClose()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="lcApprovalForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-lg-6 col-md-6 selection-label-reverse">
+          <label
+            >Select LC Application Number
+            <span class="required-asterisk">*</span></label
+          >
+          <ng-select
+            id="inputGroupSelect01"
+            formControlName="lcApplication"
+            (change)="lcApplicationNo($event)"
+            [clearable]="false"
+          >
+            <ng-option
+              value="{{ Data._id }}"
+              *ngFor="let Data of lcApplicationList"
+            >
+              {{ Data._id }}
+            </ng-option>
+          </ng-select>
+          <div
+            *ngIf="(isSubmitted || form['lcApplication'].touched) && form['lcApplication'].errors?.['required']"
+            class="text-danger"
+          >
+            LC Application Number is required.
+          </div>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="studentId"
+            placeholder=" Student ID "
+            readonly
+          />
+          <label>Student ID </label>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="studentName"
+            placeholder=" Student Name "
+            readonly
+          />
+          <label>Student Name </label>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 selection-label-reverse">
+          <label>Select Admin <span class="required-asterisk">*</span></label>
+          <ng-select
+            id="inputGroupSelect01"
+            formControlName="admin"
+            (change)="getadminId($event)"
+            [clearable]="false"
+          >
+            <ng-option [value]="item.id" *ngFor="let item of staffLists"
+              >{{ item.first_name }}
+              {{ item.middle_name }}
+              {{ item.last_name }}</ng-option
+            >
+          </ng-select>
+          <div
+            *ngIf="(isSubmitted || form['admin'].touched) && form['admin'].errors?.['required']"
+            class="text-danger"
+          >
+            Admin is required.
+          </div>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="totalFees"
+            placeholder=" Total Fees "
+            readonly
+          />
+          <label>Total Fees </label>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="paidFees"
+            placeholder=" Paid Fees "
+            readonly
+          />
+          <label>Paid Fees </label>
+        </div>
+        <div class="form-group col-lg-6 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="dueFees"
+            placeholder=" Due Fees "
+            readonly
+          />
+          <label>Due Fees </label>
+        </div>
+        <div class="form-check mb-3" *ngIf="showApprovalCheckbox">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="Approval"
+            formControlName="approvalYes"
+            (change)="handleCheckboxClick()"
+          />
+          <label class="form-check-label" for="ApprovalYes">Approval</label>
+          <div
+            *ngIf="(isSubmitted || form['approvalYes'].touched) && form['approvalYes'].errors?.['required']"
+            class="text-danger"
+          >
+            Approval is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center" *ngIf="showApprovalCheckbox">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

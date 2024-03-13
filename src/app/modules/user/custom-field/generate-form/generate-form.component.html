@@ -1,0 +1,997 @@
+<div class="row row-sm mt-5">
+  <div class="col-lg-12 mt-3">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Generated Form</h4>
+        </div>
+        <div class="row mt-4">
+          <div class="form-group selection-label-reverse col-lg-4 col-md-6 col-12 m-right-10">
+            <label for="formSelection">Select Form</label>
+            <ng-select [items]="formOptions" bindValue="_id" bindLabel="formName" [(ngModel)]="formId"
+              (change)="getFormStepList()">
+            </ng-select>
+          </div>
+          <div class="col-lg-4 col-md-6 col-12">
+            <button type="submit" class="btn btn-primary" (click)="generateForm()">
+              Generate Form
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body text-center" *ngIf="createdFieldList.length === 0">
+        <h3>Please select form type to generate form</h3>
+      </div>
+      <div class="card-body" *ngIf="createdFieldList.length > 0 && addDaynamicTaskForm">
+        <ng-container [ngTemplateOutlet]="
+            createdFieldList[0].isStepExist
+              ? dynamicStepForm
+              : dynamicNormalForm
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #dynamicStepForm>
+  <mat-stepper [linear]="isLinear" #stepper>
+    <mat-step *ngFor="let s of createdFieldList; let si = index" [stepControl]="s.dynamicForm[s.formGroupName]">
+      <form [formGroup]="s.dynamicForm[s.formGroupName]" (ngSubmit)="onSubmit()">
+        <ng-template matStepLabel *ngIf="s.stepName">{{
+          s.stepName
+          }}</ng-template>
+        <div class="mt-3" *ngFor="let g of s.formGroups; let gi = index">
+          <div class="blank">
+            <h3 for="">{{ g.groupName | titlecase }}</h3>
+          </div>
+
+          <ng-container *ngIf="g.isMultiple; else singleField">
+            <div [formArrayName]="g.groupId" *ngIf="g.isMultiple">
+              <div *ngFor="let control of getArrayControls(g.groupId, s).controls; let j = index">
+                <div [formGroupName]="j">
+
+                  <div class="row">
+                    <div *ngFor="let f of g.groupFields; let i = index"
+                      class="col-lg-{{ (12 /g.groupFields.length ) - 1 }} col-md-{{ (12 /g.groupFields.length ) - 1 }} col-12">
+                      <div [ngSwitch]="f.fieldName" class="fields-box">
+                        <div class="form-group" *ngSwitchCase="'text'">
+                          <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                            [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'email'">
+                          <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                            [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'password'">
+                          <input [type]="f.isViewPassword ? 'text' : f.fieldName" class="form-control" [id]="f.name"
+                            aria-describedby="emailHelp" [formControlName]="f.field_id" placeholder="Enter Field Name"
+                            appTrimWhitespace />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+                          <button type="button" id="togglePassword" class="eye-button"
+                            (click)="togglePasswordVisibility(si, gi, i)">
+                            <em class="eye-icon fas" [ngClass]="
+                                  f.isViewPassword ? 'fa-eye' : 'fa-eye-slash'
+                                    "></em>
+                          </button>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'number'">
+                          <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                            [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+                        </div>
+                        <div class="form-group selection-label-reverse" *ngSwitchCase="'dropdown'">
+                          <label [for]="f.name">{{ f.name }}</label>
+                          <ng-select [items]="f.options" [formControlName]="f.field_id" [searchable]="f.isSearch"
+                            [multiple]="f.optionsType === 'multiple'">
+                          </ng-select>
+                        </div>
+                        <ng-container *ngSwitchCase="'reference'">
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                        f.referenceData.name === 'Pincode' &&
+                                        (f.dependentOn_id === null || f.isViewDependent)
+                                      ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="pincode_name"
+                              bindValue="id" [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                              (change)="setReferenceDropdownData(f, $event, s)">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                        f.referenceData.name === 'Village' &&
+                                        (f.dependentOn_id === null || f.isViewDependent)
+                                      ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="village_name"
+                              bindValue="id" [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                              (change)="setReferenceDropdownData(f, $event, s)">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                        f.referenceData.name === 'Sub-district' &&
+                                        (f.dependentOn_id === null || f.isViewDependent)
+                                      ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="sub_district_name"
+                              bindValue="id" [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                              (change)="setReferenceDropdownData(f, $event, s)">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                        f.referenceData.name === 'District' &&
+                                        (f.dependentOn_id === null || f.isViewDependent)
+                                      ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="district_name"
+                              bindValue="id" [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                              (change)="setReferenceDropdownData(f, $event, s)">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                        f.referenceData.name === 'State' &&
+                                        (f.dependentOn_id === null || f.isViewDependent)
+                                      ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindValue="id"
+                              [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                              bindLabel="state_name">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                          f.referenceData.name === 'Medium' &&
+                                          (f.dependentOn_id === null || f.isViewDependent)
+                                        ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name"
+                              bindValue="id" (change)="setReferenceDropdownData(f, $event, s)">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                          f.referenceData.name === 'Standard' &&
+                                          (f.dependentOn_id === null || f.isViewDependent)
+                                        ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name"
+                              bindValue="id">
+                            </ng-select>
+                          </div>
+                          <div class="form-group selection-label-reverse" *ngIf="
+                                          f.referenceData.name === 'Academic year' &&
+                                          (f.dependentOn_id === null || f.isViewDependent)
+                                        ">
+                            <label [for]="f.name">{{ f.name }}</label>
+                            <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="title"
+                              bindValue="_id">
+                            </ng-select>
+                          </div>
+                        </ng-container>
+                        <div *ngSwitchCase="'radio'">
+                          <span>{{ f.name }}</span>
+                          <div *ngFor="let o of f.options; let i = index"
+                            class="form-group pt-0 mt-0 flexing-part-radio" style="margin-bottom: 0px">
+                            <input type="radio" [formControlName]="f.field_id" [value]="o" id="radio{{ f.name + i }}" />
+                            <label for="radio{{ f.name + i }}">{{
+                              o
+                              }}</label>
+
+                          </div>
+                        </div>
+                        <div *ngSwitchCase="'checkbox'">
+                          <label for="exampleInputEmail" style="margin-bottom: 0px">{{
+                            f.name
+                            }}</label>
+                          <div [formArrayName]="f.field_id">
+                            <div *ngFor="let o of f.options; let i = index" class="form-check pt-0 mt-0">
+                              <input type="checkbox" class="form-check-input" id="exampleCheck{{ f.name + i }}"
+                                [formControlName]="i" [value]="o" />
+                              <label class="form-check-label" for="exampleCheck{{ f.name + i }}">{{ o }}</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group selection-label-reverse-edits" *ngSwitchCase="'textarea'">
+                          <label [for]="f.name">{{ f.name }}</label>
+                          <textarea class="form-control ng-select-design" [id]="f.name" rows="3"
+                            [formControlName]="f.field_id" placeholder="Enter {{ f.name }}"
+                            appTrimWhitespace></textarea>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'datepicker'">
+                          <input type="text" class="form-control details-input cursor-pointer"
+                            (keydown)="$event.preventDefault()" [formControlName]="f.field_id" [id]="f.name"
+                            bsDatepicker #dp="bsDatepicker" [bsConfig]="{
+                                        adaptivePosition: true,
+                                        dateInputFormat: 'DD-MM-YYYY'
+                                      }" placeholder="Set Date" />
+                          <label [for]="f.name">{{ f.name }}</label>
+
+                          <span class="set-position-custom new-added-postion-set cursor-pointer" (click)="dp.toggle()">
+                            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 122.88 122.89" width="18" height="18">
+                              <title>date</title>
+                              <path
+                                d="M81.61,4.73C81.61,2.12,84.19,0,87.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM66.11,105.66c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1ZM15.85,68.94c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14-10.1H107c.8,0,.8,10.1,0,10.1H91.25c-.8,0-.8-10.1,0-10.1ZM15.85,87.3c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1ZM41,87.3c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14,0c-.8,0-.8-10.1,0-10.1H107c.8,0,.8,10.1,0,10.1Zm-75.4,18.36c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1ZM29.61,4.73C29.61,2.12,32.19,0,35.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM6.4,43.47H116.47v-22a3,3,0,0,0-.86-2.07,2.92,2.92,0,0,0-2.07-.86H103a3.2,3.2,0,0,1,0-6.4h10.55a9.36,9.36,0,0,1,9.33,9.33v92.09a9.36,9.36,0,0,1-9.33,9.33H9.33A9.36,9.36,0,0,1,0,113.55V21.47a9.36,9.36,0,0,1,9.33-9.33H20.6a3.2,3.2,0,1,1,0,6.4H9.33a3,3,0,0,0-2.07.86,2.92,2.92,0,0,0-.86,2.07v22Zm110.08,6.41H6.4v63.67a3,3,0,0,0,.86,2.07,2.92,2.92,0,0,0,2.07.86H113.55a3,3,0,0,0,2.07-.86,2.92,2.92,0,0,0,.86-2.07V49.88ZM50.43,18.54a3.2,3.2,0,0,1,0-6.4H71.92a3.2,3.2,0,1,1,0,6.4Z" />
+                            </svg>
+                          </span>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'datetime'">
+                          <input type="text" placeholder="Value" class="form-control" [formControlName]="f.field_id"
+                            [bsConfig]="datePickerConfig" bsDatepicker (keydown)="$event.preventDefault()"
+                            (bsValueChange)="changeTimeFormat($event, f.field_id)" />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'timepicker'">
+                          <input type="text" class="form-control details-input cursor-pointer"
+                            [ngxMatTimepicker]="timepicker" matInput [format]="24" readonly
+                            [formControlName]="f.field_id" placeholder="12:00" [formControlName]="f.field_id"
+                            (click)="dp.hide()" (keydown)="$event.preventDefault()" />
+                          <label for="exampleInputEmail1">{{ f.name }}</label>
+
+                          <span class="set-position-custom new-added-postion-set cursor-pointer"
+                            (click)="timepicker.open()">
+                            <!DOCTYPE svg
+                              PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                              viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                              <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000"
+                                stroke="none">
+                                <path d="M2370 5113 c-468 -44 -863 -180 -1220 -419 -384 -257 -683 -597 -885
+                                                    -1009 -168 -340 -248 -661 -262 -1040 -15 -426 73 -832 263 -1214 133 -269
+                                                    271 -459 488 -677 221 -220 412 -357 681 -489 188 -92 309 -137 500 -185 598
+                                                    -150 1209 -85 1754 186 271 135 452 265 672 484 210 209 342 387 470 635 181
+                                                    348 271 694 286 1090 15 426 -73 832 -263 1214 -134 269 -271 459 -488 676
+                                                    -229 228 -407 356 -691 495 -288 142 -567 220 -890 250 -102 9 -333 11 -415 3z
+                                                    m520 -388 c702 -109 1311 -554 1628 -1190 105 -211 172 -421 209 -656 24 -156
+                                                    24 -481 0 -634 -98 -628 -438 -1162 -962 -1510 -728 -485 -1680 -485 -2410 0
+                                                    -522 347 -865 883 -962 1506 -24 158 -24 480 0 638 112 714 552 1320 1192
+                                                    1639 252 125 493 194 800 226 83 9 404 -4 505 -19z" />
+                                <path d="M2495 3936 c-49 -18 -102 -77 -112 -125 -5 -20 -8 -416 -8 -881 l0
+                                                    -845 22 -42 c13 -23 35 -50 50 -61 16 -10 178 -104 361 -207 374 -211 390
+                                                    -217 477 -175 108 52 138 192 60 279 -23 25 -126 90 -315 196 l-280 159 0 751
+                                                    c0 462 -4 773 -10 805 -23 120 -134 186 -245 146z" />
+                              </g>
+                            </svg>
+                          </span>
+                          <ngx-mat-timepicker #timepicker [enableKeyboardInput]="true"></ngx-mat-timepicker>
+                        </div>
+                        <div class="form-group" *ngSwitchCase="'file'">
+                          <div class="form-group selection-label-reverse-edits-audits">
+                            <ngx-dropzone [id]="f.name + i" class="form-control"
+                              (change)="onPreviewFileSelect($event,f,s)" accept=".png, .jpg, .jpeg, application/pdf"
+                              #dropzone [multiple]="false">
+                              <ngx-dropzone-label *ngIf="!dynamicFormControls(si, s.formGroupName, f.field_id).value">
+                                <div>
+                                  <h2>
+                                    Please Select
+                                    File
+                                  </h2>
+                                </div>
+                              </ngx-dropzone-label>
+                              <img *ngIf="
+                              dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                              getFileExtension(
+                                dynamicFormControls(si, s.formGroupName, f.field_id).value
+                              ) == 'img'
+                            " [src]="formControls[f.field_id].value" alt="" />
+                              <img *ngIf="
+                              dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                              getFileExtension(
+                                dynamicFormControls(si, s.formGroupName, f.field_id).value
+                              ) == 'pdf'
+                            " src="assets/img/pdf-icon.png" alt="" height="130" width="110" style="margin: auto" />
+                            </ngx-dropzone>
+                            <label for="exampleInputEmail1">{{ f.name }}</label>
+                            <button *ngIf="dynamicFormControls(si, s.formGroupName, f.field_id).value"
+                              class="btn btn-danger mt-2 danger-filled-btn-cls-add" (click)="
+                            removeUploadedFile(f,s)
+                          ">
+                              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                version="1.1" x="0px" y="0px" viewBox="0 0 500 625" enable-background="new 0 0 500 500"
+                                xml:space="preserve" width="47" height="42">
+                                <g>
+                                  <g>
+                                    <path
+                                      d="M406,250.4c-0.3,64.7-41.4,124.8-102.6,146.9c-31,11.2-64.9,12.5-96.6,3.5c-30.5-8.7-57.6-26.7-77.9-51    C86.8,299.3,82,225.1,116,169.2c33.6-55.4,100.3-85.1,164-72.3c64.1,12.9,114,65.2,124.3,129.8C405.5,234.5,406,242.5,406,250.4    c0.1,12.9,20.1,12.9,20,0c-0.3-73.7-47-140.2-116.1-165.7c-68.8-25.4-149.5-3.5-196,53.2c-23.2,28.3-37.2,62.8-40.1,99.3    c-2.9,36.3,6,73.4,24.9,104.6c38.5,63.4,114,96.1,186.6,81.4C356,408.8,413,349.3,423.8,278c1.4-9.2,2.2-18.3,2.2-27.6    C426,237.5,406,237.5,406,250.4z" />
+                                  </g>
+                                </g>
+                                <g>
+                                  <g>
+                                    <g>
+                                      <path
+                                        d="M160.2,174.3c18.6,18.6,37.3,37.3,55.9,55.9c29.7,29.7,59.4,59.4,89.1,89.1c6.8,6.8,13.6,13.6,20.4,20.4     c9.1,9.1,23.3-5,14.1-14.1c-18.6-18.6-37.3-37.3-55.9-55.9c-29.7-29.7-59.4-59.4-89.1-89.1c-6.8-6.8-13.6-13.6-20.4-20.4     C165.2,151.1,151.1,165.2,160.2,174.3L160.2,174.3z" />
+                                    </g>
+                                  </g>
+                                  <g>
+                                    <g>
+                                      <path
+                                        d="M174.3,339.8c18.6-18.6,37.3-37.3,55.9-55.9c29.7-29.7,59.4-59.4,89.1-89.1c6.8-6.8,13.6-13.6,20.4-20.4     c9.1-9.1-5-23.3-14.1-14.1c-18.6,18.6-37.3,37.3-55.9,55.9c-29.7,29.7-59.4,59.4-89.1,89.1c-6.8,6.8-13.6,13.6-20.4,20.4     C151.1,334.8,165.2,348.9,174.3,339.8L174.3,339.8z" />
+                                    </g>
+                                  </g>
+                                </g>
+                              </svg>
+                            </button>
+                            <button type="button" *ngIf="
+                            dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                            getFileExtension(
+                                dynamicFormControls(si, s.formGroupName, f.field_id).value
+                            ) == 'pdf'
+                          " class="btn btn-primary ms-2 mt-2 danger-filled-btn-cls-add">
+                              <a [href]="formControls[f.field_id].value" target="_blank" rel="noopener">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" x="0px" y="0px" width="47"
+                                  height="42">
+                                  <g>
+                                    <path
+                                      d="M24,8C9.53,8,2.39,22.94,2.09,23.58v.84C2.39,25.06,9.53,40,24,40S45.61,25.06,45.91,24.42v-.84C45.61,22.94,38.47,8,24,8Zm0,30C12.11,38,5.38,26.38,4.12,24c1.25-2.39,8-14,19.88-14S42.62,21.62,43.88,24C42.63,26.38,35.91,38,24,38Z" />
+                                    <path
+                                      d="M24,13A11,11,0,1,0,35,24,11,11,0,0,0,24,13Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,24,33Z" />
+                                    <path
+                                      d="M24,18a6,6,0,1,0,6,6A6,6,0,0,0,24,18Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,24,28Z" />
+                                  </g>
+                                </svg>
+                              </a>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="form-group selection-label-reverse ckeditor-cls-width-adjust"
+                          *ngSwitchCase="'editor'">
+                          <label>{{ f.name }}</label>
+                          <div class="form-group selection-label-reverse">
+                            <ckeditor [editor]="Editor" id="classic-editor" name="classic-editor"
+                              [formControlName]="f.field_id"></ckeditor>
+                          </div>
+                        </div>
+                        <div class="mt-0 mb-3"
+                          *ngIf="(isSubmitted || control.get(f.field_id)?.touched) && control.get(f.field_id)?.errors">
+                          <div class="error_message" *ngIf="control.get(f.field_id)?.errors?.['required']">
+                            <span class="e_arrow"></span>
+                            <i>*{{ f.name }} is required</i>
+                          </div>
+                          <div class="error_message"
+                            *ngIf="f.fieldName === 'email' && control.get(f.field_id)?.errors?.['pattern']">
+                            <span class="e_arrow"></span>
+                            <i>*Enter valid {{ f.name }}.</i>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-lg-2 col-md-6 col-12"><button class="btn btn-danger"
+                        (click)="removeGroup(j, g.groupId,s)"><span class="cross-cls-svg-added">
+                          <i class="fas fa-times"></i>
+                        </span></button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="ms-0"><button type="button" class="btn btn-primary" (click)="addControl(g,s)"> Add
+                {{g.groupName}}
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #singleField>
+            <div class="row">
+              <div *ngFor="let f of g.groupFields; let i = index" class="col-lg-6 col-md-6 col-12 mb-3">
+                <div [ngSwitch]="f.fieldName" class="fields-box">
+                  <div class="form-group" *ngSwitchCase="'text'">
+                    <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                      [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'email'">
+                    <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                      [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'password'">
+                    <input [type]="f.isViewPassword ? 'text' : f.fieldName" class="form-control" [id]="f.name"
+                      aria-describedby="emailHelp" [formControlName]="f.field_id" placeholder="Enter Field Name"
+                      appTrimWhitespace />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+                    <button type="button" id="togglePassword" class="eye-button"
+                      (click)="togglePasswordVisibility(si, gi, i)">
+                      <em class="eye-icon fas" [ngClass]="
+                    f.isViewPassword ? 'fa-eye' : 'fa-eye-slash'
+                      "></em>
+                    </button>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'number'">
+                    <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                      [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+                  </div>
+                  <div class="form-group selection-label-reverse" *ngSwitchCase="'dropdown'">
+                    <label [for]="f.name">{{ f.name }}</label>
+                    <ng-select [items]="f.options" [formControlName]="f.field_id" [searchable]="f.isSearch"
+                      [multiple]="f.optionsType === 'multiple'">
+                    </ng-select>
+                  </div>
+                  <ng-container *ngSwitchCase="'reference'">
+                    <div class="form-group selection-label-reverse" *ngIf="
+                          f.referenceData.name === 'Pincode' &&
+                          (f.dependentOn_id === null || f.isViewDependent)
+                        ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="pincode_name"
+                        [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'" bindValue="id"
+                        (change)="setReferenceDropdownData(f, $event, s)">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                          f.referenceData.name === 'Village' &&
+                          (f.dependentOn_id === null || f.isViewDependent)
+                        ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="village_name"
+                        [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'" bindValue="id"
+                        (change)="setReferenceDropdownData(f, $event, s)">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                          f.referenceData.name === 'Sub-district' &&
+                          (f.dependentOn_id === null || f.isViewDependent)
+                        ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="sub_district_name"
+                        [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'" bindValue="id"
+                        (change)="setReferenceDropdownData(f, $event, s)">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                          f.referenceData.name === 'District' &&
+                          (f.dependentOn_id === null || f.isViewDependent)
+                        ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="district_name"
+                        [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'" bindValue="id"
+                        (change)="setReferenceDropdownData(f, $event, s)">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                          f.referenceData.name === 'State' &&
+                          (f.dependentOn_id === null || f.isViewDependent)
+                        ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindValue="id"
+                        bindLabel="state_name" [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                                    f.referenceData.name === 'Medium' &&
+                                    (f.dependentOn_id === null || f.isViewDependent)
+                                  ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name" bindValue="id"
+                        (change)="setReferenceDropdownData(f, $event, s)">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                                    f.referenceData.name === 'Standard' &&
+                                    (f.dependentOn_id === null || f.isViewDependent)
+                                  ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name" bindValue="id">
+                      </ng-select>
+                    </div>
+                    <div class="form-group selection-label-reverse" *ngIf="
+                                    f.referenceData.name === 'Academic year' &&
+                                    (f.dependentOn_id === null || f.isViewDependent)
+                                  ">
+                      <label [for]="f.name">{{ f.name }}</label>
+                      <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="title" bindValue="_id">
+                      </ng-select>
+                    </div>
+                  </ng-container>
+                  <div *ngSwitchCase="'radio'">
+                    <span>{{ f.name }}</span>
+                    <div *ngFor="let o of f.options; let i = index" class="form-group pt-0 mt-0 flexing-part-radio"
+                      style="margin-bottom: 0px">
+                      <input type="radio" [formControlName]="f.field_id" [value]="o" id="radio{{ f.name + i }}" />
+                      <label for="radio{{ f.name + i }}">{{
+                        o
+                        }}</label>
+
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'checkbox'">
+                    <label for="exampleInputEmail" style="margin-bottom: 0px">{{
+                      f.name
+                      }}</label>
+                    <div [formArrayName]="f.field_id">
+                      <div *ngFor="let o of f.options; let i = index" class="form-check pt-0 mt-0">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck{{ f.name + i }}"
+                          [formControlName]="i" [value]="o" />
+                        <label class="form-check-label" for="exampleCheck{{ f.name + i }}">{{ o }}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group selection-label-reverse-edits" *ngSwitchCase="'textarea'">
+                    <label [for]="f.name">{{ f.name }}</label>
+                    <textarea class="form-control ng-select-design" [id]="f.name" rows="3"
+                      [formControlName]="f.field_id" placeholder="Enter {{ f.name }}" appTrimWhitespace></textarea>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'datepicker'">
+                    <input type="text" class="form-control details-input cursor-pointer" [formControlName]="f.field_id"
+                      (keydown)="$event.preventDefault()" [id]="f.name" bsDatepicker #dp="bsDatepicker" [bsConfig]="{
+                          adaptivePosition: true,
+                          dateInputFormat: 'DD-MM-YYYY'
+                        }" placeholder="Set Date" />
+                    <label [for]="f.name">{{ f.name }}</label>
+
+                    <span class="set-position-custom new-added-postion-set cursor-pointer" (click)="dp.toggle()">
+                      <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 122.88 122.89" width="18" height="18">
+                        <title>date</title>
+                        <path
+                          d="M81.61,4.73C81.61,2.12,84.19,0,87.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM66.11,105.66c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1ZM15.85,68.94c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14-10.1H107c.8,0,.8,10.1,0,10.1H91.25c-.8,0-.8-10.1,0-10.1ZM15.85,87.3c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1ZM41,87.3c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14,0c-.8,0-.8-10.1,0-10.1H107c.8,0,.8,10.1,0,10.1Zm-75.4,18.36c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1ZM29.61,4.73C29.61,2.12,32.19,0,35.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM6.4,43.47H116.47v-22a3,3,0,0,0-.86-2.07,2.92,2.92,0,0,0-2.07-.86H103a3.2,3.2,0,0,1,0-6.4h10.55a9.36,9.36,0,0,1,9.33,9.33v92.09a9.36,9.36,0,0,1-9.33,9.33H9.33A9.36,9.36,0,0,1,0,113.55V21.47a9.36,9.36,0,0,1,9.33-9.33H20.6a3.2,3.2,0,1,1,0,6.4H9.33a3,3,0,0,0-2.07.86,2.92,2.92,0,0,0-.86,2.07v22Zm110.08,6.41H6.4v63.67a3,3,0,0,0,.86,2.07,2.92,2.92,0,0,0,2.07.86H113.55a3,3,0,0,0,2.07-.86,2.92,2.92,0,0,0,.86-2.07V49.88ZM50.43,18.54a3.2,3.2,0,0,1,0-6.4H71.92a3.2,3.2,0,1,1,0,6.4Z" />
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'datetime'">
+                    <input type="text" placeholder="Value" class="form-control" [formControlName]="f.field_id"
+                      (keydown)="$event.preventDefault()" [bsConfig]="datePickerConfig" bsDatepicker
+                      (bsValueChange)="changeTimeFormat($event, f.field_id)" />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'timepicker'">
+                    <input type="text" class="form-control details-input cursor-pointer" [ngxMatTimepicker]="timepicker"
+                      matInput [format]="24" readonly [formControlName]="f.field_id" placeholder="12:00"
+                      (keydown)="$event.preventDefault()" [formControlName]="f.field_id" (click)="dp.hide()" />
+                    <label for="exampleInputEmail1">{{ f.name }}</label>
+
+                    <span class="set-position-custom new-added-postion-set cursor-pointer" (click)="timepicker.open()">
+                      <!DOCTYPE svg
+                        PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+                      <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                        viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000"
+                          stroke="none">
+                          <path d="M2370 5113 c-468 -44 -863 -180 -1220 -419 -384 -257 -683 -597 -885
+                                      -1009 -168 -340 -248 -661 -262 -1040 -15 -426 73 -832 263 -1214 133 -269
+                                      271 -459 488 -677 221 -220 412 -357 681 -489 188 -92 309 -137 500 -185 598
+                                      -150 1209 -85 1754 186 271 135 452 265 672 484 210 209 342 387 470 635 181
+                                      348 271 694 286 1090 15 426 -73 832 -263 1214 -134 269 -271 459 -488 676
+                                      -229 228 -407 356 -691 495 -288 142 -567 220 -890 250 -102 9 -333 11 -415 3z
+                                      m520 -388 c702 -109 1311 -554 1628 -1190 105 -211 172 -421 209 -656 24 -156
+                                      24 -481 0 -634 -98 -628 -438 -1162 -962 -1510 -728 -485 -1680 -485 -2410 0
+                                      -522 347 -865 883 -962 1506 -24 158 -24 480 0 638 112 714 552 1320 1192
+                                      1639 252 125 493 194 800 226 83 9 404 -4 505 -19z" />
+                          <path d="M2495 3936 c-49 -18 -102 -77 -112 -125 -5 -20 -8 -416 -8 -881 l0
+                                      -845 22 -42 c13 -23 35 -50 50 -61 16 -10 178 -104 361 -207 374 -211 390
+                                      -217 477 -175 108 52 138 192 60 279 -23 25 -126 90 -315 196 l-280 159 0 751
+                                      c0 462 -4 773 -10 805 -23 120 -134 186 -245 146z" />
+                        </g>
+                      </svg>
+                    </span>
+                    <ngx-mat-timepicker #timepicker [enableKeyboardInput]="true"></ngx-mat-timepicker>
+                  </div>
+                  <div class="form-group" *ngSwitchCase="'file'">
+                    <div class="form-group selection-label-reverse-edits-audits">
+                      <ngx-dropzone [id]="f.name + i" class="form-control" (change)="onPreviewFileSelect($event,f,s)"
+                        accept=".png, .jpg, .jpeg, application/pdf" #dropzone [multiple]="false">
+                        <ngx-dropzone-label *ngIf="!dynamicFormControls(si, s.formGroupName, f.field_id).value">
+                          <div>
+                            <h2>
+                              Please Select
+                              File
+                            </h2>
+                          </div>
+                        </ngx-dropzone-label>
+                        <img *ngIf="
+                        dynamicFormControls(si, s.formGroupName, f.field_id)?.value &&
+                        getFileExtension(
+                          dynamicFormControls(si, s.formGroupName, f.field_id).value
+                        ) == 'img'
+                      " [src]="dynamicFormControls(si, s.formGroupName, f.field_id).value" alt="" />
+                        <img *ngIf="
+                        dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                        getFileExtension(
+                          dynamicFormControls(si, s.formGroupName, f.field_id).value
+                        ) == 'pdf'
+                      " src="assets/img/pdf-icon.png" alt="" height="130" width="110" style="margin: auto" />
+                      </ngx-dropzone>
+                      <label for="exampleInputEmail1">{{ f.name }}</label>
+                      <button *ngIf="dynamicFormControls(si, s.formGroupName, f.field_id).value"
+                        class="btn btn-danger mt-2 danger-filled-btn-cls-add" (click)="
+                      removeUploadedFile(f,s)
+                    ">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                          x="0px" y="0px" viewBox="0 0 500 625" enable-background="new 0 0 500 500" xml:space="preserve"
+                          width="47" height="42">
+                          <g>
+                            <g>
+                              <path
+                                d="M406,250.4c-0.3,64.7-41.4,124.8-102.6,146.9c-31,11.2-64.9,12.5-96.6,3.5c-30.5-8.7-57.6-26.7-77.9-51    C86.8,299.3,82,225.1,116,169.2c33.6-55.4,100.3-85.1,164-72.3c64.1,12.9,114,65.2,124.3,129.8C405.5,234.5,406,242.5,406,250.4    c0.1,12.9,20.1,12.9,20,0c-0.3-73.7-47-140.2-116.1-165.7c-68.8-25.4-149.5-3.5-196,53.2c-23.2,28.3-37.2,62.8-40.1,99.3    c-2.9,36.3,6,73.4,24.9,104.6c38.5,63.4,114,96.1,186.6,81.4C356,408.8,413,349.3,423.8,278c1.4-9.2,2.2-18.3,2.2-27.6    C426,237.5,406,237.5,406,250.4z" />
+                            </g>
+                          </g>
+                          <g>
+                            <g>
+                              <g>
+                                <path
+                                  d="M160.2,174.3c18.6,18.6,37.3,37.3,55.9,55.9c29.7,29.7,59.4,59.4,89.1,89.1c6.8,6.8,13.6,13.6,20.4,20.4     c9.1,9.1,23.3-5,14.1-14.1c-18.6-18.6-37.3-37.3-55.9-55.9c-29.7-29.7-59.4-59.4-89.1-89.1c-6.8-6.8-13.6-13.6-20.4-20.4     C165.2,151.1,151.1,165.2,160.2,174.3L160.2,174.3z" />
+                              </g>
+                            </g>
+                            <g>
+                              <g>
+                                <path
+                                  d="M174.3,339.8c18.6-18.6,37.3-37.3,55.9-55.9c29.7-29.7,59.4-59.4,89.1-89.1c6.8-6.8,13.6-13.6,20.4-20.4     c9.1-9.1-5-23.3-14.1-14.1c-18.6,18.6-37.3,37.3-55.9,55.9c-29.7,29.7-59.4,59.4-89.1,89.1c-6.8,6.8-13.6,13.6-20.4,20.4     C151.1,334.8,165.2,348.9,174.3,339.8L174.3,339.8z" />
+                              </g>
+                            </g>
+                          </g>
+                        </svg>
+                      </button>
+                      <button type="button" *ngIf="
+                      dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                      getFileExtension(
+                          dynamicFormControls(si, s.formGroupName, f.field_id).value
+                      ) == 'pdf'
+                    " class="btn btn-primary ms-2 mt-2 danger-filled-btn-cls-add">
+                        <a [href]="formControls[f.field_id].value" target="_blank" rel="noopener">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" x="0px" y="0px" width="47"
+                            height="42">
+                            <g>
+                              <path
+                                d="M24,8C9.53,8,2.39,22.94,2.09,23.58v.84C2.39,25.06,9.53,40,24,40S45.61,25.06,45.91,24.42v-.84C45.61,22.94,38.47,8,24,8Zm0,30C12.11,38,5.38,26.38,4.12,24c1.25-2.39,8-14,19.88-14S42.62,21.62,43.88,24C42.63,26.38,35.91,38,24,38Z" />
+                              <path
+                                d="M24,13A11,11,0,1,0,35,24,11,11,0,0,0,24,13Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,24,33Z" />
+                              <path d="M24,18a6,6,0,1,0,6,6A6,6,0,0,0,24,18Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,24,28Z" />
+                            </g>
+                          </svg>
+                        </a>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="form-group selection-label-reverse ckeditor-cls-width-adjust" *ngSwitchCase="'editor'">
+                    <label>{{ f.name }}</label>
+                    <div class="form-group selection-label-reverse">
+                      <ckeditor [editor]="Editor" id="classic-editor" name="classic-editor"
+                        [formControlName]="f.field_id"></ckeditor>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="
+                    (isSubmitted || dynamicFormControls(si, s.formGroupName, f.field_id)?.touched) &&
+                    dynamicFormControls(si, s.formGroupName, f.field_id)?.errors
+                  ">
+                  <div class="error_message"
+                    *ngIf="dynamicFormControls(si, s.formGroupName, f.field_id)?.errors?.['required']">
+                    <span class="e_arrow"></span>
+                    <i>*{{ f.name }} is required</i>
+                  </div>
+                  <div class="error_message"
+                    *ngIf="f.fieldName === 'email' && dynamicFormControls(si, s.formGroupName, f.field_id)?.errors?.['pattern']">
+                    <span class="e_arrow"></span>
+                    <i>*Enter valid {{ f.name }}.</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+        </div>
+
+
+        <div class="mt-3 blank justify-content-between d-flex">
+          <button matStepperPrevious class="btn btn-secondary" *ngIf="si > 0">
+            Back
+          </button>
+          <button matStepperNext *ngIf="si < createdFieldList.length - 1" type="button" class="btn btn-primary"
+            (click)="onNext(s)">
+            Next
+          </button>
+          <button *ngIf="si === createdFieldList.length - 1" type="submit" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
+  <!-- </form> -->
+</ng-template>
+
+<ng-template #dynamicNormalForm>
+  <form [formGroup]="addDaynamicTaskForm" (ngSubmit)="onSubmit()">
+    <div *ngFor="let s of createdFieldList; let si = index">
+      <div class="row mt-3" *ngFor="let g of s.formGroups; let gi = index">
+        <div class="col-12">
+          <h3 for="">{{ g.groupName | titlecase }}</h3>
+        </div>
+        <div *ngFor="let f of g.groupFields; let i = index" class="col-lg-6 col-md-6 col-12 mb-3">
+          <div [ngSwitch]="f.fieldName" class="fields-box">
+            <div class="form-group" *ngSwitchCase="'text'">
+              <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+            </div>
+            <div class="form-group" *ngSwitchCase="'email'">
+              <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+            </div>
+            <div class="form-group" *ngSwitchCase="'password'">
+              <input [type]="f.isViewPassword ? 'text' : f.fieldName" class="form-control" [id]="f.name"
+                aria-describedby="emailHelp" [formControlName]="f.field_id" placeholder="Enter Field Name"
+                appTrimWhitespace />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+              <button type="button" id="togglePassword" class="eye-button"
+                (click)="togglePasswordVisibility(si, gi, i)">
+                <em class="eye-icon fas" [ngClass]="
+              f.isViewPassword ? 'fa-eye' : 'fa-eye-slash'
+                "></em>
+              </button>
+            </div>
+            <div class="form-group" *ngSwitchCase="'number'">
+              <input [type]="f.fieldName" class="form-control" [id]="f.name" aria-describedby="emailHelp"
+                [formControlName]="f.field_id" placeholder="Enter Field Name" appTrimWhitespace />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+            </div>
+            <div class="form-group selection-label-reverse" *ngSwitchCase="'dropdown'">
+              <label [for]="f.name">{{ f.name }}</label>
+              <ng-select [items]="f.options" [formControlName]="f.field_id" [searchable]="f.isSearch"
+                [multiple]="f.optionsType === 'multiple'">
+              </ng-select>
+            </div>
+            <ng-container *ngSwitchCase="'reference'">
+              <div class="form-group selection-label-reverse" *ngIf="
+                  f.referenceData.name === 'Pincode' &&
+                  (f.dependentOn_id === null || f.isViewDependent)
+                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="pincode_name" bindValue="id"
+                  [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                  (change)="setReferenceDropdownData(f, $event, s)">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                  f.referenceData.name === 'Village' &&
+                  (f.dependentOn_id === null || f.isViewDependent)
+                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="village_name" bindValue="id"
+                  [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                  (change)="setReferenceDropdownData(f, $event, s)">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                  f.referenceData.name === 'Sub-district' &&
+                  (f.dependentOn_id === null || f.isViewDependent)
+                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="sub_district_name"
+                  [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'" bindValue="id"
+                  (change)="setReferenceDropdownData(f, $event, s)">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                  f.referenceData.name === 'District' &&
+                  (f.dependentOn_id === null || f.isViewDependent)
+                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="district_name" bindValue="id"
+                  [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'"
+                  (change)="setReferenceDropdownData(f, $event, s)">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                  f.referenceData.name === 'State' &&
+                  (f.dependentOn_id === null || f.isViewDependent)
+                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindValue="id" bindLabel="state_name"
+                  [searchable]="f.isSearch" [multiple]="f.optionsType === 'multiple'">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                                  f.referenceData.name === 'Medium' &&
+                                  (f.dependentOn_id === null || f.isViewDependent)
+                                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name" bindValue="id"
+                  (change)="setReferenceDropdownData(f, $event, s)">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                                  f.referenceData.name === 'Standard' &&
+                                  (f.dependentOn_id === null || f.isViewDependent)
+                                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="name" bindValue="id">
+                </ng-select>
+              </div>
+              <div class="form-group selection-label-reverse" *ngIf="
+                                  f.referenceData.name === 'Academic year' &&
+                                  (f.dependentOn_id === null || f.isViewDependent)
+                                ">
+                <label [for]="f.name">{{ f.name }}</label>
+                <ng-select [items]="f.options" [formControlName]="f.field_id" bindLabel="title" bindValue="_id">
+                </ng-select>
+              </div>
+            </ng-container>
+            <div *ngSwitchCase="'radio'">
+              <span>{{ f.name }}</span>
+              <div *ngFor="let o of f.options; let i = index" class="form-group pt-0 mt-0 flexing-part-radio"
+                style="margin-bottom: 0px">
+                <input type="radio" [formControlName]="f.field_id" [value]="o" id="radio{{ f.name + i }}" />
+                <label for="radio{{ f.name + i }}">{{
+                  o
+                  }}</label>
+
+              </div>
+            </div>
+            <div *ngSwitchCase="'checkbox'">
+              <label for="exampleInputEmail" style="margin-bottom: 0px">{{
+                f.name
+                }}</label>
+              <div [formArrayName]="f.field_id">
+                <div *ngFor="let o of f.options; let i = index" class="form-check pt-0 mt-0">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck{{ f.name + i }}"
+                    [formControlName]="i" [value]="o" />
+                  <label class="form-check-label" for="exampleCheck{{ f.name + i }}">{{ o }}</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse-edits" *ngSwitchCase="'textarea'">
+              <label [for]="f.name">{{ f.name }}</label>
+              <textarea class="form-control ng-select-design" [id]="f.name" rows="3" [formControlName]="f.field_id"
+                placeholder="Enter {{ f.name }}" appTrimWhitespace></textarea>
+            </div>
+            <div class="form-group" *ngSwitchCase="'datepicker'">
+              <input type="text" class="form-control details-input cursor-pointer" [formControlName]="f.field_id"
+                [id]="f.name" bsDatepicker #dp="bsDatepicker" (keydown)="$event.preventDefault()" [bsConfig]="{
+                  adaptivePosition: true,
+                  dateInputFormat: 'DD-MM-YYYY'
+                }" placeholder="Set Date" />
+              <label [for]="f.name">{{ f.name }}</label>
+
+              <span class="set-position-custom new-added-postion-set cursor-pointer" (click)="dp.toggle()">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 122.89"
+                  width="18" height="18">
+                  <title>date</title>
+                  <path
+                    d="M81.61,4.73C81.61,2.12,84.19,0,87.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM66.11,105.66c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1ZM15.85,68.94c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14-10.1H107c.8,0,.8,10.1,0,10.1H91.25c-.8,0-.8-10.1,0-10.1ZM15.85,87.3c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1ZM41,87.3c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H81.9c.8,0,.8,10.1,0,10.1Zm25.14,0c-.8,0-.8-10.1,0-10.1H107c.8,0,.8,10.1,0,10.1Zm-75.4,18.36c-.8,0-.8-10.1,0-10.1H31.64c.8,0,.8,10.1,0,10.1Zm25.13,0c-.8,0-.8-10.1,0-10.1H56.77c.8,0,.8,10.1,0,10.1ZM29.61,4.73C29.61,2.12,32.19,0,35.38,0s5.77,2.12,5.77,4.73V25.45c0,2.61-2.58,4.73-5.77,4.73s-5.77-2.12-5.77-4.73V4.73ZM6.4,43.47H116.47v-22a3,3,0,0,0-.86-2.07,2.92,2.92,0,0,0-2.07-.86H103a3.2,3.2,0,0,1,0-6.4h10.55a9.36,9.36,0,0,1,9.33,9.33v92.09a9.36,9.36,0,0,1-9.33,9.33H9.33A9.36,9.36,0,0,1,0,113.55V21.47a9.36,9.36,0,0,1,9.33-9.33H20.6a3.2,3.2,0,1,1,0,6.4H9.33a3,3,0,0,0-2.07.86,2.92,2.92,0,0,0-.86,2.07v22Zm110.08,6.41H6.4v63.67a3,3,0,0,0,.86,2.07,2.92,2.92,0,0,0,2.07.86H113.55a3,3,0,0,0,2.07-.86,2.92,2.92,0,0,0,.86-2.07V49.88ZM50.43,18.54a3.2,3.2,0,0,1,0-6.4H71.92a3.2,3.2,0,1,1,0,6.4Z" />
+                </svg>
+              </span>
+            </div>
+            <div class="form-group" *ngSwitchCase="'datetime'">
+              <input type="text" placeholder="Value" class="form-control" [formControlName]="f.field_id"
+                (keydown)="$event.preventDefault()" [bsConfig]="datePickerConfig" bsDatepicker
+                (bsValueChange)="changeTimeFormat($event, f.field_id)" />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+            </div>
+            <div class="form-group" *ngSwitchCase="'timepicker'">
+              <input type="text" class="form-control details-input cursor-pointer" [ngxMatTimepicker]="timepicker"
+                matInput [format]="24" readonly [formControlName]="f.field_id" placeholder="12:00"
+                [formControlName]="f.field_id" (click)="dp.hide()" (keydown)="$event.preventDefault()" />
+              <label for="exampleInputEmail1">{{ f.name }}</label>
+
+              <span class="set-position-custom new-added-postion-set cursor-pointer" (click)="timepicker.open()">
+                <!DOCTYPE svg
+                  PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                  viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                  <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+                    <path d="M2370 5113 c-468 -44 -863 -180 -1220 -419 -384 -257 -683 -597 -885
+                              -1009 -168 -340 -248 -661 -262 -1040 -15 -426 73 -832 263 -1214 133 -269
+                              271 -459 488 -677 221 -220 412 -357 681 -489 188 -92 309 -137 500 -185 598
+                              -150 1209 -85 1754 186 271 135 452 265 672 484 210 209 342 387 470 635 181
+                              348 271 694 286 1090 15 426 -73 832 -263 1214 -134 269 -271 459 -488 676
+                              -229 228 -407 356 -691 495 -288 142 -567 220 -890 250 -102 9 -333 11 -415 3z
+                              m520 -388 c702 -109 1311 -554 1628 -1190 105 -211 172 -421 209 -656 24 -156
+                              24 -481 0 -634 -98 -628 -438 -1162 -962 -1510 -728 -485 -1680 -485 -2410 0
+                              -522 347 -865 883 -962 1506 -24 158 -24 480 0 638 112 714 552 1320 1192
+                              1639 252 125 493 194 800 226 83 9 404 -4 505 -19z" />
+                    <path d="M2495 3936 c-49 -18 -102 -77 -112 -125 -5 -20 -8 -416 -8 -881 l0
+                              -845 22 -42 c13 -23 35 -50 50 -61 16 -10 178 -104 361 -207 374 -211 390
+                              -217 477 -175 108 52 138 192 60 279 -23 25 -126 90 -315 196 l-280 159 0 751
+                              c0 462 -4 773 -10 805 -23 120 -134 186 -245 146z" />
+                  </g>
+                </svg>
+              </span>
+              <ngx-mat-timepicker #timepicker [enableKeyboardInput]="true"></ngx-mat-timepicker>
+            </div>
+            <div class="form-group" *ngSwitchCase="'file'">
+              <div class="form-group selection-label-reverse-edits-audits">
+                <ngx-dropzone [id]="f.name + i" class="form-control" (change)="onPreviewFileSelect($event,f,s)"
+                  accept=".png, .jpg, .jpeg, application/pdf" #dropzone [multiple]="false">
+                  <ngx-dropzone-label *ngIf="!dynamicFormControls(si, s.formGroupName, f.field_id).value">
+                    <div>
+                      <h2>
+                        Please Select
+                        File
+                      </h2>
+                    </div>
+                  </ngx-dropzone-label>
+                  <img *ngIf="
+                  dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                  getFileExtension(
+                    dynamicFormControls(si, s.formGroupName, f.field_id).value
+                  ) == 'img'
+                " [src]="formControls[f.field_id].value" alt="" />
+                  <img *ngIf="
+                  dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                  getFileExtension(
+                    dynamicFormControls(si, s.formGroupName, f.field_id).value
+                  ) == 'pdf'
+                " src="assets/img/pdf-icon.png" alt="" height="130" width="110" style="margin: auto" />
+                </ngx-dropzone>
+                <label for="exampleInputEmail1">{{ f.name }}</label>
+                <button *ngIf="dynamicFormControls(si, s.formGroupName, f.field_id).value"
+                  class="btn btn-danger mt-2 danger-filled-btn-cls-add" (click)="
+                removeUploadedFile(f, s)
+              ">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                    x="0px" y="0px" viewBox="0 0 500 625" enable-background="new 0 0 500 500" xml:space="preserve"
+                    width="47" height="42">
+                    <g>
+                      <g>
+                        <path
+                          d="M406,250.4c-0.3,64.7-41.4,124.8-102.6,146.9c-31,11.2-64.9,12.5-96.6,3.5c-30.5-8.7-57.6-26.7-77.9-51    C86.8,299.3,82,225.1,116,169.2c33.6-55.4,100.3-85.1,164-72.3c64.1,12.9,114,65.2,124.3,129.8C405.5,234.5,406,242.5,406,250.4    c0.1,12.9,20.1,12.9,20,0c-0.3-73.7-47-140.2-116.1-165.7c-68.8-25.4-149.5-3.5-196,53.2c-23.2,28.3-37.2,62.8-40.1,99.3    c-2.9,36.3,6,73.4,24.9,104.6c38.5,63.4,114,96.1,186.6,81.4C356,408.8,413,349.3,423.8,278c1.4-9.2,2.2-18.3,2.2-27.6    C426,237.5,406,237.5,406,250.4z" />
+                      </g>
+                    </g>
+                    <g>
+                      <g>
+                        <g>
+                          <path
+                            d="M160.2,174.3c18.6,18.6,37.3,37.3,55.9,55.9c29.7,29.7,59.4,59.4,89.1,89.1c6.8,6.8,13.6,13.6,20.4,20.4     c9.1,9.1,23.3-5,14.1-14.1c-18.6-18.6-37.3-37.3-55.9-55.9c-29.7-29.7-59.4-59.4-89.1-89.1c-6.8-6.8-13.6-13.6-20.4-20.4     C165.2,151.1,151.1,165.2,160.2,174.3L160.2,174.3z" />
+                        </g>
+                      </g>
+                      <g>
+                        <g>
+                          <path
+                            d="M174.3,339.8c18.6-18.6,37.3-37.3,55.9-55.9c29.7-29.7,59.4-59.4,89.1-89.1c6.8-6.8,13.6-13.6,20.4-20.4     c9.1-9.1-5-23.3-14.1-14.1c-18.6,18.6-37.3,37.3-55.9,55.9c-29.7,29.7-59.4,59.4-89.1,89.1c-6.8,6.8-13.6,13.6-20.4,20.4     C151.1,334.8,165.2,348.9,174.3,339.8L174.3,339.8z" />
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </button>
+                <button type="button" *ngIf="
+                dynamicFormControls(si, s.formGroupName, f.field_id).value &&
+                getFileExtension(
+                    dynamicFormControls(si, s.formGroupName, f.field_id).value
+                ) == 'pdf'
+              " class="btn btn-primary ms-2 mt-2 danger-filled-btn-cls-add">
+                  <a [href]="formControls[f.field_id].value" target="_blank" rel="noopener">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 60" x="0px" y="0px" width="47" height="42">
+                      <g>
+                        <path
+                          d="M24,8C9.53,8,2.39,22.94,2.09,23.58v.84C2.39,25.06,9.53,40,24,40S45.61,25.06,45.91,24.42v-.84C45.61,22.94,38.47,8,24,8Zm0,30C12.11,38,5.38,26.38,4.12,24c1.25-2.39,8-14,19.88-14S42.62,21.62,43.88,24C42.63,26.38,35.91,38,24,38Z" />
+                        <path d="M24,13A11,11,0,1,0,35,24,11,11,0,0,0,24,13Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,24,33Z" />
+                        <path d="M24,18a6,6,0,1,0,6,6A6,6,0,0,0,24,18Zm0,10a4,4,0,1,1,4-4A4,4,0,0,1,24,28Z" />
+                      </g>
+                    </svg>
+                  </a>
+                </button>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse ckeditor-cls-width-adjust" *ngSwitchCase="'editor'">
+              <label>{{ f.name }}</label>
+              <div class="form-group selection-label-reverse">
+                <ckeditor [editor]="Editor" id="classic-editor" name="classic-editor" [formControlName]="f.field_id">
+                </ckeditor>
+              </div>
+            </div>
+            <div *ngIf="
+                (isSubmitted || formControls[f.field_id].touched) &&
+                formControls[f.field_id].errors
+              ">
+              <div class="error_message" *ngIf="formControls[f.field_id]?.errors?.['required']">
+                <span class="e_arrow"></span>
+                <i>*{{ f.name }} is required</i>
+              </div>
+              <div class="error_message"
+                *ngIf="f.fieldName === 'email' && formControls[f.field_id]?.errors?.['pattern']">
+                <span class="e_arrow"></span>
+                <i>*Enter valid {{ f.name }}.</i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-3 col-3 m-auto" (click)="onSubmit()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-template>

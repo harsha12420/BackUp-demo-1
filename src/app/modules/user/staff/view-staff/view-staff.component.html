@@ -1,0 +1,722 @@
+<app-page-header [title]="'STAFF'" [items]="['Staff']" [active_item]="'Staff-View'"></app-page-header>
+<div class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="card custom-card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-2">
+            <div class="pos-relative w-fitcont">
+              <span class="profile-image"><img class="br-5" alt="" [src]="
+                    userDetails.logo == 'NULL'
+                      ? 'assets/img/logo/schoolOfAchiever.png'
+                      : userDetails.logo
+                  " /></span>
+            </div>
+          </div>
+          <div class="col-lg-10">
+            <div class="prof-details">
+              <h4 class="font-weight-semibold">
+                {{ userDetails?.first_name | titlecase }}
+                {{ userDetails?.middle_name | titlecase }}
+                {{ userDetails?.last_name | titlecase }}
+              </h4>
+              <p class="text-muted mb-2">
+                <span><i class="fa fa-phone me-2"></i></span><span
+                  class="font-weight-semibold me-2">Phone:</span><span>{{ userDetails.mobile }}</span>
+              </p>
+              <p class="text-muted mb-2">
+                <span><i class="fa fa-envelope me-2"></i></span><span
+                  class="font-weight-semibold me-2">Email:</span><span>{{ userDetails.email }}</span>
+              </p>
+              <p class="text-muted mb-2">
+                <span><i class="fa fa-globe me-2"></i></span><span class="font-weight-semibold me-2">Employee
+                  Code:</span><span>{{ userDetails.employee_code }}</span>
+              </p>
+              <button (click)="onEdit()" class="btn btn-primary">
+                Edit Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer py-0">
+        <div class="profile-tab tab-menu-heading border-bottom-0">
+          <nav ngbNav #nav="ngbNav" class="main-nav-line p-0 tabs-menu profile-nav-line border-0 br-5 mb-0">
+            <ng-container ngbNavItem>
+              <a ngbNavLink class="mb-2 mt-2">Basic Info</a>
+              <ng-template ngbNavContent>
+                <div class="main-content-body tab-pane">
+                  <div class="card">
+                    <div class="card-body border-0 rounded-10 p-4 staff-all-pages-portion-same-here-cls-add">
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>First Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.first_name | titlecase }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Middle Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.middle_name || '-' | titlecase }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Last Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.last_name | titlecase }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Office Email:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.email }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Personal Email:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.personal_email }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Mobile:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.mobile }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Whatsapp Number:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.whatsapp_number }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Date Of Birth:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{
+                            userDetails.birth_date | date : "yyyy-MM-dd hh:mm a"
+                            }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Date Of Joining:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{
+                            userDetails.date_joining | date : "yyyy-MM-dd hh:mm a"
+                            }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Enrollment Type:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.enrollment_type }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Marital Status:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.marital_status }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Staff Room:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.staff_room_name || '-' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="heading-all-cls-add my-3">
+                        <h5>Subject Allotment:</h5>
+                      </div>
+
+                      <div class="row px-3" *ngFor="
+                          let data of userDetails.user_subject_allotment || []
+                        ">
+                        <div class="col-lg-2">
+                          <h5>
+                            Medium: <span> {{ data.medium_name }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Standard: <span> {{ data.standard_name }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Subject: <span> {{ data.subject_name }} </span>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+            <ng-container ngbNavItem>
+              <a ngbNavLink class="mb-2 mt-2">Family and Ice Details</a>
+              <ng-template ngbNavContent>
+                <div class="main-content-body tab-pane border-top-0">
+                  <div class="card">
+                    <div class="card-body border-0 staff-all-pages-portion-same-here-cls-add">
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Primary Role Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span *ngFor="
+                              let item of userDetails.primary_role;
+                            ">
+                            <ng-container *ngIf="item.is_primary">
+                              {{ item.role_name | titlecase }}
+                            </ng-container>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Secondary Role Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span *ngFor="
+                              let item of userDetails.user_role;
+                              let last = last
+                            ">{{ item.role_name | titlecase }}
+
+                            <ng-container *ngIf="!last">{{',' + ' '}}</ng-container>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Reporting Role Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span *ngFor="
+                              let item of userDetails.user_reporting_role;
+                              let last = last
+                            ">{{ item.role_name | titlecase }}
+                            <ng-container *ngIf="!last">{{',' + ' '}}</ng-container>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="title-case-adding-all-here-add my-3">
+                        <h5>Ice Details:</h5>
+                      </div>
+
+                      <div class="row px-3" *ngFor="let data of userDetails.user_ice">
+                        <div class="col-lg-2">
+                          <h5>
+                            Contact Name:
+                            <span> {{ data.contact_name | titlecase }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Relation Type: <span> {{ data.relation }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Contact Number:
+                            <span> {{ data.contact_number }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Preference: <span> {{ data.preference }} </span>
+                          </h5>
+                        </div>
+                      </div>
+
+                      <div class="title-case-adding-all-here-add my-3">
+                        <h5>Emergency Contact Details:</h5>
+                      </div>
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>
+                            Contact Name:
+                            <span>
+                              {{ userDetails.relation_name | titlecase }}
+                            </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Relation Type:
+                            <span> {{ userDetails.relation_type }} </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Contact Number:
+                            <span>
+                              {{ userDetails.emergency_contact_number }}
+                            </span>
+                          </h5>
+                        </div>
+                        <div class="col-lg-2">
+                          <h5>
+                            Professional:
+                            <span> {{ userDetails.professional }} </span>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+            <ng-container ngbNavItem>
+              <a ngbNavLink class="mb-2 mt-2">Address & University Details</a>
+              <ng-template ngbNavContent>
+                <div class="main-content-body tab-pane">
+                  <div class="card">
+                    <div class="card-body border-0 rounded-10 p-4 staff-all-pages-portion-same-here-cls-add">
+                      <div class="title-case-adding-all-here-add my-3">
+                        <h5>Correspondence Address Details:</h5>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Address Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_address_name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Street:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_street }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Block:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_block }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Building:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_building }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Area:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_area }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>City:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_city }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>State:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_state }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Country:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_country }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Pincode:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.correspondence_pincode }}</span>
+                        </div>
+                      </div>
+
+                      <div class="title-case-adding-all-here-add my-3">
+                        <h5>Permanent Address Details:</h5>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Address Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_address_name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Street:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_street }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Block:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_block }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Building:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_building }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Area:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_area }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>City:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_city }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>State:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_state }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Country:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_country }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Pincode:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.parmanent_pincode }}</span>
+                        </div>
+                      </div>
+
+                      <div class="main-heading-start-inner-portion">
+                        <h5>University Details:</h5>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>University Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.university_name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>College:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.college }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Degree:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.degree }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row px-3">
+                        <div class="col-lg-2">
+                          <h5>Year of Passing:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.year_of_passing | date: 'yyyy-MM-dd hh:mm a' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Last Organisation Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.last_organisation_name }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Last Organisation Contact Number:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{
+                            userDetails.last_organisation_contact_number
+                            }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Reference Detail:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span>{{ userDetails.reference_detail }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+            <ng-container ngbNavItem>
+              <a ngbNavLink class="mb-2 mt-2">Bank Details</a>
+              <ng-template ngbNavContent>
+                <div class="main-content-body tab-pane">
+                  <div class="card">
+                    <div class="card-body border-0 rounded-10 p-4 staff-all-pages-portion-same-here-cls-add">
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Account Holder Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span> {{ userDetails.account_holder_name }} </span>
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Salary Account Number:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span> {{ userDetails.salary_account_number }} </span>
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>Bank Name:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span> {{ userDetails.bank_name }} </span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>IFSC Code:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span> {{ userDetails.ifsc_code }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-2">
+                          <h5>UAN Number:</h5>
+                        </div>
+                        <div class="col-lg-10">
+                          <span> {{ userDetails.uan_number }} </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+            <ng-container ngbNavItem>
+              <a ngbNavLink class="mb-2 mt-2">Documents</a>
+              <ng-template ngbNavContent>
+                <div class="main-content-body tab-pane">
+                  <div class="card">
+                    <div class="card-body border-0 rounded-10 p-4 staff-all-pages-portion-same-here-cls-add">
+                      <div class="row">
+                        <ng-container *ngFor="let data of userDetails.document">
+                          <div class="col-lg-6 mb-3" *ngIf="data.details || data.front || data.back">
+                            <div class="main-heading-to-add-all-cls-add my-3">
+                              <h4 *ngIf="data.front || data.back">
+                                {{ data.name | titlecase }}
+                                Details
+                              </h4>
+                            </div>
+
+                            <div class="row my-1" *ngIf="data.details">
+                              <div class="col-lg-2">
+                                <h5 class="">Details:</h5>
+                              </div>
+                              <div class="col-lg-10">
+                                <span>{{ data.details }}</span>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-lg-6" *ngIf="data.front">
+                                <div class="boxing-cls-addhere">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <h5 class="m-0">Front Details</h5>
+                                    </div>
+                                    <div class="broken-cls-add text-center m-auto" (click)="previewDoc(data.front)"
+                                      style="cursor: pointer">
+                                      <img *ngIf="
+                                          getFileExtension(data.front) == 'img'
+                                        " [src]="data.front" alt="" style="
+                                          height: 220px !important;
+                                          width: 180px !important;
+                                          object-fit: cover;
+                                          margin-top: 10px;
+                                        " />
+                                      <img *ngIf="
+                                          getFileExtension(data.front) == 'pdf'
+                                        " src="assets/img/pdf-icon.png" alt="" style="
+                                          margin: auto;
+                                          height: 130px !important;
+                                          width: 110px !important;
+                                          object-fit: cover;
+                                          margin-top: 10px;
+                                        " />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-lg-6" *ngIf="data.back">
+                                <div class="boxing-cls-addhere">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <h5 class="m-0">Back Details</h5>
+                                    </div>
+                                    <div class="broken-cls-add text-center m-auto" (click)="previewDoc(data.back)"
+                                      style="cursor: pointer">
+                                      <img *ngIf="
+                                          getFileExtension(data.back) == 'img'
+                                        " [src]="data.back" alt="" style="
+                                          height: 220px !important;
+                                          width: 180px !important;
+                                          object-fit: cover;
+                                          margin-top: 10px;
+                                        " />
+                                      <img *ngIf="
+                                          getFileExtension(data.back) == 'pdf'
+                                        " src="assets/img/pdf-icon.png" alt="" height="130" width="110" style="
+                                          margin: auto;
+                                          height: 130px !important;
+                                          width: 110px !important;
+                                          object-fit: cover;
+                                          margin-top: 10px;
+                                        " />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </ng-container>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Row -->
+<div class="row row-sm">
+  <div class="col-lg-12 col-md-12">
+    <div class="custom-card main-content-body-profile">
+      <div [ngbNavOutlet]="nav"></div>
+    </div>
+  </div>
+</div>
+<!-- row closed -->

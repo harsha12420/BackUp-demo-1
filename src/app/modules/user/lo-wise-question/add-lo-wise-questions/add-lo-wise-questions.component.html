@@ -1,0 +1,359 @@
+<app-page-header [title]="'LO Wise Questions'" [items]="['LO Wise Questions']"
+  [active_item]="'Add LO Wise Questions'"></app-page-header>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add LO Wise Questions</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="questionsForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="form-group col-3 selection-label-reverse">
+              <label>Select Medium <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="medium($event)" formControlName="medium" [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['medium'].touched) && form['medium'].errors?.['required']"
+                class="text-danger">
+                Medium is required.
+              </div>
+            </div>
+            <div class="form-group col-3 selection-label-reverse">
+              <label>Select Subject <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="subject($event)" formControlName="subject"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of subjectList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['subject'].touched) && form['subject'].errors?.['required']"
+                class="text-danger">
+                Subject is required.
+              </div>
+            </div>
+            <div class="form-group col-3 selection-label-reverse">
+              <label>Select Standard <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="standard($event)" formControlName="standard"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['standard'].touched) && form['standard'].errors?.['required']"
+                class="text-danger">
+                Standard is required.
+              </div>
+            </div>
+            <div class="form-group col-3 selection-label-reverse">
+              <label>Select Lesson <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="lesson($event)" formControlName="lesson" [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of lessonList">
+                  {{ Data.lesson }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['lesson'].touched) && form['lesson'].errors?.['required']"
+                class="text-danger">
+                Lesson is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Add Lesson Planning Status <span class="required-asterisk">*</span></label>
+              <select class="form-control" formControlName="status">
+                <option value="true">Active</option>
+                <option value="false">In Active</option>
+              </select>
+              <div *ngIf="(isSubmitted || form['status'].touched) && form['status'].errors?.['required']"
+                class="text-danger">
+                Add Lesson Planning Status is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" formArrayName="topics">
+            <div *ngFor="let topic of getTopicsControl(); let i = index">
+              <div class="blocking-responsive all-side-less" formGroupName="{{i}}">
+
+
+                <div class="row">
+                  <div class="form-group selection-label-reverse col-3">
+                    <label>Select Topic <span class="required-asterisk">*</span></label>
+                    <ng-select id="inputGroupSelect01" (change)="topicEvent($event)" formControlName="topic_id"
+                      [clearable]="false">
+                      <ng-option value="{{ Data.id }}" *ngFor="let Data of topicList">
+                        {{ Data.topic_name }}
+                      </ng-option>
+                    </ng-select>
+                    <div
+                      *ngIf="(isSubmitted || topic.get('topic_id')?.touched) && topic.get('topic_id')?.hasError('required')"
+                      class="text-danger">
+                      Topic is required.
+                    </div>
+                  </div>
+                  <div class="form-group selection-label-reverse width-custom-add col-3">
+                    <label>Select Sub Topic</label>
+                    <ng-select id="inputGroupSelect01" (change)="subTopicEvent($event)" formControlName="sub_topic_id"
+                      [clearable]="false">
+                      <ng-option value="{{ Data.id }}" *ngFor="let Data of subTopicList">
+                        {{ Data.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group selection-label-reverse width-custom-add col-2">
+                    <label>Select LO Level <span class="required-asterisk">*</span></label>
+                    <ng-select id="inputGroupSelect01" formControlName="lo_level_id" [clearable]="false">
+                      <ng-option value="{{ Data.lo_level_id }}" *ngFor="let Data of loList">
+                        {{ Data.lo_level_name }}
+                      </ng-option>
+                    </ng-select>
+                    <div
+                      *ngIf="(isSubmitted || topic.get('lo_level_id')?.touched) && topic.get('lo_level_id')?.hasError('required')"
+                      class="text-danger">
+                      LO Level is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-2 text-end w-100 set-cls-add-grid">
+                    <button class="btn btn-danger all-cls-top" type="button" (click)="removeTopic(i)"><span
+                        class="cross-cls-svg-added">
+                        <i class="fas fa-times"></i>
+                      </span></button>
+                  </div>
+                  <div class="form-group col-2 text-end w-100 set-cls-add-grid">
+                    <button class="btn btn-primary all-cls-top" type="button" (click)="addQuestion(i)">Add
+                      Questions</button>
+                  </div>
+                </div>
+
+                <div class="form-group hiding-ckeditor-bar-used" formArrayName="questions"
+                  *ngIf="questionsForm.get('topics.' + i + '.questions')">
+                  <div *ngFor="let subtopic of getControl(i); let j = index">
+
+                    <div formGroupName="{{j}}">
+                      <div class="row">
+                        <div class="col-lg-4">
+                          <div class="form-group selection-label-reverse">
+                            <label>Question Type <span class="required-asterisk">*</span></label>
+                            <ng-select id="inputGroupSelect01" (change)="questionType($event)"
+                              formControlName="question_type_id" [clearable]="false" [readonly]="true">
+                              <ng-option value="{{ Data.id }}" *ngFor="let Data of questionTypeList">
+                                {{ Data.question_option_type }}
+                              </ng-option>
+                            </ng-select>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group selection-label-reverse">
+                            <label>Difficulty Level <span class="required-asterisk">*</span></label>
+                            <ng-select id="inputGroupSelect01" (change)="questionType($event)"
+                              formControlName="difficulty_level_id" [clearable]="false" [readonly]="true">
+                              <ng-option value="{{ Data.id }}" *ngFor="let Data of difficultyLevelList">
+                                {{ Data.name }}
+                              </ng-option>
+                            </ng-select>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="form-group selection-label-reverse">
+                            <label>Question <span class="required-asterisk">*</span></label>
+                            <div class="form-group selection-label-reverse">
+                              <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+                                formControlName="question"></ckeditor>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-3" *ngIf="subtopic['controls']?.question_type_id === 3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <label>Choice A <span class="required-asterisk">*</span></label>
+                            <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+                              formControlName="choices_A"></ckeditor>
+                          </div>
+                        </div>
+                        <div class="col-lg-3" *ngIf="subtopic['controls']?.question_type_id === 3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <label>Choice B <span class="required-asterisk">*</span></label>
+                            <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+                              formControlName="choices_B"></ckeditor>
+                          </div>
+                        </div>
+                        <div class="col-lg-3" *ngIf="subtopic['controls']?.question_type_id === 3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <label>Choice C <span class="required-asterisk">*</span></label>
+                            <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+                              formControlName="choices_C"></ckeditor>
+                          </div>
+                        </div>
+                        <div class="col-lg-3" *ngIf="subtopic['controls']?.question_type_id === 3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <label>Choice D <span class="required-asterisk">*</span></label>
+                            <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+                              formControlName="choices_D"></ckeditor>
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <input type="text" class="form-control" placeholder="Correct Answer"
+                              formControlName="correct_answer" [readonly]="true" />
+                            <label>Correct Answer <span class="required-asterisk">*</span></label>
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div class="form-group selection-label-reverse" disabled>
+                            <input type="number" class="form-control" placeholder="Marks" formControlName="marks"
+                              [readonly]="true" />
+                            <label>Marks <span class="required-asterisk">*</span></label>
+                          </div>
+                        </div>
+                        <div class="col-lg-3">
+                          <div class="form-group">
+                            <button class="btn btn-danger" type="button" (click)="removeSubtopic(i, j)"><span
+                                class="cross-cls-svg-added">
+                                <i class="fas fa-times"></i>
+                              </span></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <div class="text-center">
+              <button class="btn btn-primary mb-0 mx-auto text-center" type="button" (click)="addTopic()">Add Lo Wise
+                Questions</button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #SubjectCategory class="subject-category-vs">
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Questions</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addQuestionsForm" (ngSubmit)="addQuestions()">
+      <div class="row">
+        <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+          <label>Select Question Type <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" (change)="questionType($event)" formControlName="question_type_id"
+            [clearable]="false">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of questionTypeList">
+              {{ Data.question_option_type }}
+            </ng-option>
+          </ng-select>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['question_type_id'].touched) && addQuestionsform['question_type_id'].errors?.['required']"
+            class="text-danger">
+            Question Type is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+          <label>Select Difficulty Level <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" (change)="difficultyLevel($event)" formControlName="difficulty_level_id"
+            [clearable]="false">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of difficultyLevelList">
+              {{ Data.name }}
+            </ng-option>
+          </ng-select>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['difficulty_level_id'].touched) && addQuestionsform['difficulty_level_id'].errors?.['required']"
+            class="text-danger">
+            Difficulty Level is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12 indexing-increaseing">
+          <label>Question <span class="required-asterisk">*</span></label>
+          <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+            formControlName="question"></ckeditor>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['question'].touched) && addQuestionsform['question'].errors?.['required']"
+            class="text-danger">
+            Question is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12 indexing-increaseing"
+          *ngIf="questionTypeId === 3">
+          <label>Choices A<span class="required-asterisk">*</span></label>
+          <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+            formControlName="choices_A"></ckeditor>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['choices_A'].touched) && addQuestionsform['choices_A'].errors?.['required']"
+            class="text-danger">
+            Choices A is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12 indexing-increaseing"
+          *ngIf="questionTypeId === 3">
+          <label>Choices B<span class="required-asterisk">*</span></label>
+          <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+            formControlName="choices_B"></ckeditor>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['choices_B'].touched) && addQuestionsform['choices_B'].errors?.['required']"
+            class="text-danger">
+            Choices B is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12 indexing-increaseing"
+          *ngIf="questionTypeId === 3">
+          <label>Choices C<span class="required-asterisk">*</span></label>
+          <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+            formControlName="choices_C"></ckeditor>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['choices_C'].touched) && addQuestionsform['choices_C'].errors?.['required']"
+            class="text-danger">
+            Choices C is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12 indexing-increaseing"
+          *ngIf="questionTypeId === 3">
+          <label>Choices D<span class="required-asterisk">*</span></label>
+          <ckeditor [data]="editorData" [editor]="Editor" id="classic-editor" name="classic-editor"
+            formControlName="choices_D"></ckeditor>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['choices_D'].touched) && addQuestionsform['choices_D'].errors?.['required']"
+            class="text-danger">
+            Choices D is required.
+          </div>
+        </div>
+        <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Correct Answer" formControlName="correct_answer" />
+          <label>Correct Answer <span class="required-asterisk">*</span></label>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['correct_answer'].touched) && addQuestionsform['correct_answer'].errors?.['required']"
+            class="text-danger">
+            Correct Answer is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+          <input type="number" class="form-control" placeholder="Marks" formControlName="marks" />
+          <label>Marks <span class="required-asterisk">*</span></label>
+          <div
+            *ngIf="(addQuestionsSubmitted || addQuestionsform['marks'].touched) && addQuestionsform['marks'].errors?.['required']"
+            class="text-danger">
+            Marks is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,263 @@
+<app-page-header
+  [title]="'Subject Wise Chapter Planning'"
+  [items]="['Subject Wise Chapter Planning']"
+  [active_item]="'Add Subject Wise Chapter Planning'"
+></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add Subject Wise Chapter Planning</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="lessonPlanningForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="form-group col-3 selection-label-reverse">
+              <label
+                >Select Medium <span class="required-asterisk">*</span></label
+              >
+              <ng-select
+                id="inputGroupSelect01"
+                (change)="medium($event)"
+                formControlName="medium"
+                [clearable]="false"
+              >
+                <ng-option
+                  value="{{ Data.id }}"
+                  *ngFor="let Data of mediumList"
+                >
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div
+                *ngIf="(isSubmitted || form['medium'].touched) && form['medium'].errors?.['required']"
+                class="text-danger"
+              >
+                Medium is required.
+              </div>
+            </div>
+            <div class="form-group col-3 selection-label-reverse">
+              <label
+                >Select Standard <span class="required-asterisk">*</span></label
+              >
+              <ng-select
+                id="inputGroupSelect01"
+                (change)="standard($event)"
+                formControlName="standard"
+                [clearable]="false"
+              >
+                <ng-option
+                  value="{{ Data.id }}"
+                  *ngFor="let Data of standardList"
+                >
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div
+                *ngIf="(isSubmitted || form['standard'].touched) && form['standard'].errors?.['required']"
+                class="text-danger"
+              >
+                Standard is required.
+              </div>
+            </div>
+            <div class="form-group col-3 selection-label-reverse">
+              <label
+                >Select Subject <span class="required-asterisk">*</span></label
+              >
+              <ng-select
+                id="inputGroupSelect01"
+                (change)="subject($event)"
+                formControlName="subject"
+                [clearable]="false"
+              >
+                <ng-option
+                  value="{{ Data.subject_id }}"
+                  *ngFor="let Data of subjectList"
+                >
+                  {{ Data.subject_name }}
+                </ng-option>
+              </ng-select>
+              <div
+                *ngIf="(isSubmitted || form['subject'].touched) && form['subject'].errors?.['required']"
+                class="text-danger"
+              >
+                Subject is required.
+              </div>
+            </div>
+            <div class="form-group col-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Book Name"
+                formControlName="book"
+              />
+              <label>Book <span class="required-asterisk">*</span></label>
+              <div
+                *ngIf="(isSubmitted || form['book'].touched) && form['book'].errors?.['required']"
+                class="text-danger"
+              >
+                Book is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Publication Name"
+                formControlName="publication"
+              />
+              <label
+                >Publication Name
+                <span class="required-asterisk">*</span></label
+              >
+              <div
+                *ngIf="(isSubmitted || form['publication'].touched) && form['publication'].errors?.['required']"
+                class="text-danger"
+              >
+                Publication name is required.
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" formArrayName="lessons">
+            <div *ngFor="let lessonGroup of lessons().controls; let i = index">
+              <div class="row" [formGroupName]="i">
+                <div class="form-group selection-label-reverse col">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Lesson Name"
+                    formControlName="lesson"
+                  />
+                  <label
+                    >Lesson Name <span class="required-asterisk">*</span></label
+                  >
+                  <div
+                    *ngIf="
+                      (isSubmitted || lessonGroup.get('lesson')?.touched) &&
+                      lessonGroup.get('lesson')?.hasError('required')
+                    "
+                    class="text-danger"
+                  >
+                    Lesson is required.
+                  </div>
+                </div>
+                <div class="form-group selection-label-reverse col">
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="No of Lecture"
+                    formControlName="no_of_lecture"
+                  />
+                  <label
+                    >No of Lecture
+                    <span class="required-asterisk">*</span></label
+                  >
+                  <div
+                    *ngIf="
+                      (isSubmitted ||
+                        lessonGroup.get('no_of_lecture')?.touched) &&
+                      lessonGroup.get('no_of_lecture')?.hasError('required')
+                    "
+                    class="text-danger"
+                  >
+                    Number of lecture is required.
+                  </div>
+                </div>
+                <div class="form-group selection-label-reverse col">
+                  <input
+                    type="date"
+                    id="from_date"
+                    [min]="todayDate"
+                    formControlName="from_date"
+                    (change)="onDateChange(i)"
+                  />
+                  <label for="from_date"
+                    >From Date <span class="required-asterisk">*</span></label
+                  >
+                  <div
+                    *ngIf="
+                      (isSubmitted || lessonGroup.get('from_date')?.touched) &&
+                      lessonGroup.get('from_date')?.hasError('required')
+                    "
+                    class="text-danger"
+                  >
+                    From date is required.
+                  </div>
+                </div>
+                <div class="form-group selection-label-reverse col">
+                  <input
+                    type="date"
+                    id="to_date"
+                    [min]="maxDate"
+                    formControlName="to_date"
+                    (click)="onCalenderClick(i)"
+                  />
+                  <label for="to_date"
+                    >To Date <span class="required-asterisk">*</span></label
+                  >
+                  <div
+                    *ngIf="
+                      (isSubmitted || lessonGroup.get('to_date')?.touched) &&
+                      lessonGroup.get('to_date')?.hasError('required')
+                    "
+                    class="text-danger"
+                  >
+                    To date is required.
+                  </div>
+                </div>
+                <div class="form-group selection-label-reverse col">
+                  <label>Status <span class="required-asterisk">*</span></label>
+
+                  <select class="form-control" formControlName="isActive">
+                    <option value="true">Active</option>
+                    <option value="false">In Active</option>
+                  </select>
+                  <div
+                    *ngIf="
+                      (isSubmitted || lessonGroup.get('isActive')?.touched) &&
+                      lessonGroup.get('isActive')?.hasError('required')
+                    "
+                    class="text-danger"
+                  >
+                    Status is required.
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button
+                    class="btn btn-danger w-100"
+                    (click)="removeLesson(i)"
+                  >
+                    <span class="cross-cls-svg-added">
+                      <i class="fas fa-times"></i>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <button
+              class="btn btn-primary mb-0 mx-auto text-center"
+              type="button"
+              (click)="addLesson()"
+            >
+              Add Lesson
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-4 mb-0">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

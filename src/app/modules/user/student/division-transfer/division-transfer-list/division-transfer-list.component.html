@@ -1,0 +1,273 @@
+<app-page-header
+  [title]="'Division Transfer'"
+  [items]="['Division Transfer']"
+  [active_item]="'Add Division Transfer'"
+></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Division Transfer List</h4>
+        </div>
+        <div class="blocking-responsive justify-content-end align-items-center">
+          <form [formGroup]="divForm" (ngSubmit)="onSearch()">
+            <div class="row mt-4 justify-content-end">
+              <div class="col-lg-6">
+                <div class="row">
+                  <div class="form-group selection-label-reverse col-lg-3">
+                    <label
+                      >Select Medium
+                      <span class="required-asterisk">*</span></label
+                    >
+                    <ng-select
+                      id="inputGroupSelect01"
+                      (change)="getMediumId($event)"
+                      formControlName="medium_id"
+                      [clearable]="false"
+                    >
+                      <ng-option
+                        value="{{ Data.id }}"
+                        *ngFor="let Data of mediumList"
+                      >
+                        {{ Data.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group selection-label-reverse col-lg-4">
+                    <label
+                      >Select Standard
+                      <span class="required-asterisk">*</span></label
+                    >
+                    <ng-select
+                      id="inputGroupSelect01"
+                      (change)="getstandardId($event)"
+                      formControlName="standard_id"
+                      [clearable]="false"
+                    >
+                      <ng-option
+                        value="{{ Data.id }}"
+                        *ngFor="let Data of standardList"
+                      >
+                        {{ Data.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group selection-label-reverse col-lg-3">
+                    <label
+                      >Select Division
+                      <span class="required-asterisk">*</span></label
+                    >
+                    <ng-select
+                      formControlName="division_id"
+                      (change)="getDivisionId($event)"
+                      [clearable]="false"
+                    >
+                      <ng-option
+                        value="{{ Data.id }}"
+                        *ngFor="let Data of divisionList"
+                      >
+                        {{ Data.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group col-lg-2">
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      [disabled]="!divisionId"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table
+              summary="table"
+              class="table mg-b-0 text-md-nowrap table-striped table-hover"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col" (click)="sortData('name')">
+                    Student IDs
+                    <div class="spacing-up-down-side-set">
+                      <span
+                        class="arrow-up"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'name' && isAscending
+                        }"
+                      ></span>
+                      <span
+                        class="arrow-down"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'name' && !isAscending
+                        }"
+                      ></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('short_code')">
+                    Student Name
+                    <div class="spacing-up-down-side-set">
+                      <span
+                        class="arrow-up"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'short_code' && isAscending
+                        }"
+                      ></span>
+                      <span
+                        class="arrow-down"
+                        [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'short_code' && !isAscending
+                        }"
+                      ></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('is_active')">
+                    Target Division
+                    <div class="spacing-up-down-side-set">
+                      <span
+                        class="arrow-up"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'is_active' && isAscending
+                        }"
+                      ></span>
+                      <span
+                        class="arrow-down"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'is_active' && !isAscending
+                        }"
+                      ></span>
+                    </div>
+                  </th>
+                  <!-- <th scope="col" (click)="sortData('created_at')">
+                    Transfer Date
+                    <div class="spacing-up-down-side-set">
+                      <span
+                        class="arrow-up"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'created_at' && isAscending
+                        }"
+                      ></span>
+                      <span
+                        class="arrow-down"
+                        [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'created_at' && !isAscending
+                        }"
+                      ></span>
+                    </div>
+                  </th> -->
+                  <th scope="col" (click)="sortData('created_at')">
+                    Transfer Reason
+                    <div class="spacing-up-down-side-set">
+                      <span
+                        class="arrow-up"
+                        [ngClass]="{
+                          'arrow-color': orderBy === 'created_at' && isAscending
+                        }"
+                      ></span>
+                      <span
+                        class="arrow-down"
+                        [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'created_at' && !isAscending
+                        }"
+                      ></span>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody *ngIf="studList.length">
+                <tr *ngFor="let item of studList; let i = index">
+                  <th scope="row">
+                    {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                  </th>
+                  <td>{{ item.student_id }}</td>
+                  <td>
+                    {{
+                      item.first_name +
+                        " " +
+                        item.middle_name +
+                        " " +
+                        item.last_name
+                    }}
+                  </td>
+                  <td>
+                    <ng-select [(ngModel)]="item.target_division">
+                      <ng-option
+                        value="{{ Data.id }}"
+                        *ngFor="let Data of divisionFilterList"
+                      >
+                        {{ Data.name }}
+                      </ng-option>
+                    </ng-select>
+                  </td>
+
+                  <!-- <td>
+                    <input class="form-control" type="date" />
+                  </td> -->
+                  <td>
+                    <textarea
+                      rows="3"
+                      [(ngModel)]="item.transfer_reason"
+                    ></textarea>
+                  </td>
+                </tr>
+                <div class="form-group col-lg-2">
+                  <button class="btn btn-primary" (click)="submit()">
+                    Submit
+                  </button>
+                </div>
+              </tbody>
+
+              <tbody *ngIf="!studList.length">
+                <tr>
+                  <td colspan="14" class="text-center">No Data Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div
+            class="d-flex justify-content-between p-2 record-pg-cls-cum-font"
+          >
+            <div class="d-flex align-items-center">
+              <select
+                class="records-select"
+                [(ngModel)]="pageLimit"
+                name=""
+                id=""
+                (change)="onPageChange(1)"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option [value]="totalItems">All</option>
+              </select>
+              <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+            </div>
+            <ngb-pagination
+              [collectionSize]="totalItems"
+              [maxSize]="5"
+              [rotate]="true"
+              [pageSize]="pageLimit"
+              [(page)]="currentPage"
+              aria-label="Default pagination"
+              (pageChange)="onPageChange($event)"
+            >
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

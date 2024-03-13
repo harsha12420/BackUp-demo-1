@@ -1,0 +1,196 @@
+<app-page-header [title]="'Role'" [items]="['Group']" [active_item]="'Role'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Role List</h4>
+        </div>
+        <!-- <div class="d-flex blocking-responsive">
+            <div class="me-2 d-flex spacing-down-side">
+              <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                (keyup.enter)="onSearch()" />
+              <button class="btn btn-primary me-2" (click)="onSearch()">
+                Search
+              </button>
+              <button class="btn btn-dark" (click)="onClear()">Clear</button>
+            </div>
+            <button class="btn btn-primary" (click)="onModalOpen()">
+              Add Role
+            </button>
+          </div>
+        </div> -->
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select #selectExportAll (change)="exportAll(selectExportAll.value)">
+                <option value="" selected disabled>Export</option>
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('name')">
+                  Role Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('group_name')">
+                  Group Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'group_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'group_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('sub_group_name')">
+                  Sub Group Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'sub_group_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'sub_group_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="roleList.length">
+              <tr *ngFor="let item of roleList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.name | titlecase }}</td>
+                <td>{{ item.group_name | titlecase }}</td>
+                <td>{{ item.sub_group_name | titlecase }}</td>
+                <td>
+                  <!-- <div>
+                    <button class="btn btn-grey" (click)="onEdit(item.id)">
+                      Edit
+                    </button>
+                  </div> -->
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i (click)="onEdit(item.id)" class="fas fa-edit"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!roleList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #role>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ roleId ? "Edit" : "Add" }} Role</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-12">
+          <div class="form-group selection-label-reverse">
+            <label>Group Name</label>
+            <ng-select formControlName="group_id" (change)="groupNameChange($event)" #selectField>
+              <!-- <option [value]="null" disabled selected>Select Group</option> -->
+              <ng-option [value]="group.id" *ngFor="let group of groupList">
+                {{ group.name }}
+              </ng-option>
+            </ng-select>
+            <div *ngIf="(isSubmitted || form['group_id'].touched) && form['group_id'].errors?.['required']"
+              class="text-danger">
+              Please select group name.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+          <div class="form-group selection-label-reverse">
+            <label>Sub Group Name</label>
+            <ng-select formControlName="sub_group_id">
+              <!-- <ng-option [value]="null" selected>Select Sub Group</ng-option> -->
+              <ng-option [value]="subgroup.id" *ngFor="let subgroup of filterSubGroupList">
+                {{ subgroup.name }}
+              </ng-option>
+            </ng-select>
+
+            <div *ngIf="(isSubmitted || form['sub_group_id'].touched) && form['sub_group_id'].errors?.['required']"
+              class="text-danger">
+              Please select sub group name.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-12">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Enter role name" formControlName="name" />
+            <label>Role name <span class="required-asterisk">*</span></label>
+            <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']" class="text-danger">
+              Role name is required.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

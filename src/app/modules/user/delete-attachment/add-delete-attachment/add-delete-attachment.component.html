@@ -1,0 +1,56 @@
+<app-page-header [title]="'DELETE ATTACHMENT'" [items]="['Delete Attachment']"
+    [active_item]="'Add Delete Attachment'"></app-page-header>
+<div class="row row-sm">
+    <div class="col-xl-12">
+        <div class="card add-staff-here-update-cls">
+            <div class="card-header pb-0">
+                <h4 class="modal-title mb-3">Delete Attachments</h4>
+                <div class="card-body px-0">
+                    <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+                                <label>Select Types <span class="required-asterisk">*</span></label>
+                                <ng-select id="inputGroupSelect01" formControlName="reporting_types" [multiple]="true"
+                                    [closeOnSelect]="false">
+                                    <ng-option value="{{ Data.key }}" *ngFor="let Data of list">
+                                        {{ Data.name }}
+                                    </ng-option>
+                                </ng-select>
+                                <div *ngIf="(isSubmitted || form['reporting_types'].touched) && form['reporting_types'].errors?.['required']"
+                                    class="text-danger">
+                                    Type is required.
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-12"></div>
+                            <div class="form-group col-lg-6 col-md-6 col-12">
+                                <input class="form-control" type="date" id="birth_date" [max]="todayDate"
+                                    formControlName="start_date" />
+                                <label>Start Date <span class="required-asterisk">*</span></label>
+                                <div class="text-danger"
+                                    *ngIf="(isSubmitted || form['start_date'].touched) && form['start_date'].errors?.['required']">
+                                    Start date is required
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-12">
+                                <input class="form-control" type="date" id="birth_date" [max]="todayDate"
+                                    formControlName="end_date" />
+                                <label>End Date <span class="required-asterisk">*</span></label>
+                                <div class="text-danger"
+                                    *ngIf="(isSubmitted || form['end_date'].touched) && form['end_date'].errors?.['required']">
+                                    End date is required
+                                </div>
+                                <div class="text-danger"
+                                    *ngIf="addForm.errors?.['dateRange'] && (form['end_date'].dirty || form['end_date'].touched)">
+                                    End date must be equal or greater than start date.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary mt-3 mb-0">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

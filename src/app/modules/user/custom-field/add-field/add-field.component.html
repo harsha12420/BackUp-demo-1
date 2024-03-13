@@ -1,0 +1,152 @@
+<div class="row mt-3">
+  <div class="col-12 d-flex justify-content-end mb-3">
+    <a class="custom-field-a" [routerLink]="'/admin/custom-field/list'">Back to Custom field list</a>
+  </div>
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Custom Form Field</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="fieldForm">
+          <div class="row">
+            <div class="form-group col-lg-6 col-md-6 col-12">
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                placeholder="Enter Field Name" formControlName="name" appTrimWhitespace>
+              <label for="exampleInputEmail1">Field Name</label>
+              <div *ngIf="(isSubmitted || formControls['name'].touched) && formControls['name'].errors">
+                <div class="error_message" *ngIf="formControls['name'].errors['required']">
+                  <span class="e_arrow"></span>
+                  <i>*Name is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12">
+              <label for="exampleInputEmail1">Select field Type</label>
+              <select class="form-control ng-select-design" id="exampleFormControlFieldType" formControlName="field_id"
+                (change)="setValue()">
+                <!-- <option value="">Select field Type</option> -->
+                <option *ngFor="let field of fieldTypes" [value]="field['_id']">{{ field['fieldName'] === 'reference' ?
+                  ((field['fieldName'] | titlecase) + ' Dropdown') : (field['fieldName'] | titlecase )}}
+                </option>
+              </select>
+              <div *ngIf="(isSubmitted || formControls['field_id'].touched) && formControls['field_id'].errors">
+                <div class="error_message"
+                  *ngIf="formControls['field_id'].errors['required'] || formControls['field_id'].errors['min']">
+                  <span class="e_arrow"></span>
+                  <i>*Field Type is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-6 col-md-6"
+              *ngIf="getTypeValue === 'dropdown' || getTypeValue === 'reference'">
+              <label for="exampleInputEmail1">Select Options Selection Type</label>
+              <select class="form-control ng-select-design" id="exampleFormControlOptionType"
+                formControlName="optionsType">
+                <!-- <option value="">Select Options Selection Type</option> -->
+                <option value="single">Single</option>
+                <option value="multiple">Multiple</option>
+              </select>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12"
+              *ngIf="getTypeValue === 'reference'">
+              <label for="exampleInputEmail1">Select Reference Type</label>
+              <select class="form-control ng-select-design" id="exampleFormControlRefType"
+                formControlName="referenceType">
+                <!-- <option value="">Select Reference Type</option> -->
+                <option [value]="r['_id']" *ngFor="let r of referenceList">{{ r['name'] }}</option>
+              </select>
+              <div
+                *ngIf="(isSubmitted || formControls['referenceType'].touched) && formControls['referenceType'].errors">
+                <div class="error_message"
+                  *ngIf="formControls['referenceType'].errors['required'] || formControls['referenceType'].errors['min']">
+                  <span class="e_arrow"></span>
+                  <i>*Reference Type is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-6 col-md-6 col-12"
+              *ngIf="getTypeValue === 'reference' && fieldForm.value['referenceType']">
+              <label for="exampleInputEmail1">Select Dependent Reference</label>
+              <select class="form-control ng-select-design" id="exampleFormControlDepRefType"
+                formControlName="dependentOn">
+                <!-- <option value="">Select Dependent Reference</option> -->
+                <option [value]="r['_id']" *ngFor="let r of referenceList">{{ r['name'] }}</option>
+              </select>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 d-flex flex-column"
+              *ngIf="getTypeValue === 'dropdown' || getTypeValue === 'checkbox' || getTypeValue === 'radio'">
+              <div *ngFor="let o of optionArray.controls; let i = index" class="d-flex">
+                <div class="form-group col-11" style="padding-left: 0px">
+                  <input type="text" class="form-control" [formControl]="optionArray.controls[i]" [id]="i"
+                    placeholder="Enter Options" appTrimWhitespace>
+                  <label for="exampleInputEmail1">Enter Option {{ i + 1 }}</label>
+                  <div *ngIf="(isSubmitted || optionArray.controls[i].touched) && optionArray.controls[i].errors">
+                    <div class="error_message" *ngIf="optionArray.controls[i].errors['required']">
+                      <span class="e_arrow"></span>
+                      <i>*Option is required</i>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="i != 0" class="col-2">
+                  <button class="btn btn-danger" (click)="removeFieldvalue(i)">
+                    <span class="cross-cls-svg-added">
+                      <i class="fas fa-times"></i>
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <a class="link-button custom-field-a" (click)="addFieldValue()">Add Another Option</a>
+            </div>
+            <div class="form-check align-middle col-12"
+              *ngIf="getTypeValue === 'dropdown' || getTypeValue === 'reference'">
+              <input type="checkbox" class="form-check-input" id="isSearch" formControlName="isSearch">
+              <label class="form-check-label" for="isSearch">Allow
+                Serach</label>
+            </div>
+            <!-- <div class="form-check align-middle col-12">
+              <input type="checkbox" class="form-check-input" id="isMandatory" formControlName="isMandatory">
+              <label class="form-check-label" for="isMandatory">Mandatory
+                Field</label>
+            </div> -->
+          </div>
+          <button type="submit" class="btn btn-primary mt-3" (click)="onSubmit()">Submit</button>
+        </form>
+      </div>
+    </div>
+    <div class="card add-staff-here-update-cls mt-5" *ngIf="selectedFields.length > 0">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Added Input Fields:</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Field Type</th>
+                <th scope="col">Is Required</th>
+                <th scope="col">Options</th>
+                <th scope="col">Options Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of selectedFields">
+                <td>{{ field.name }}</td>
+                <td>{{ field.fieldType }}</td>
+                <td>{{ field.isRequired ? 'Required' : 'Not Required' }}</td>
+                <td>{{ field.options.length > 0 ? field.options : '-' }}</td>
+                <td>{{ field.optionsType ? field.optionsType : '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

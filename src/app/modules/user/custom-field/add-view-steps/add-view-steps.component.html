@@ -1,0 +1,73 @@
+<div class="row mt-3">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls mt-4">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add Step</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="stepForm">
+          <div class="row">
+            <div class="form-group selection-label-reverse col-lg-4 col-md-6 col-12">
+              <label for="formSelection">Select Form</label>
+              <ng-select [items]="formOptions" bindValue="_id" bindLabel="formName"
+                formControlName="formId" (change)="getFormStepList()">
+              </ng-select>
+              <div *ngIf="(isSubmitted || formControls['formId'].touched) && formControls['formId'].errors">
+                <div class="error_message" *ngIf="formControls['formId'].errors['required']">
+                  <span class="e_arrow"></span>
+                  <i>*Form is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-lg-4 col-md-6 col-12">
+              <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                placeholder="Enter Step Name" formControlName="stepName" appTrimWhitespace>
+              <label for="exampleInputEmail1">Step Name</label>
+              <div *ngIf="(isSubmitted || formControls['stepName'].touched) && formControls['stepName'].errors">
+                <div class="error_message" *ngIf="formControls['stepName'].errors['required']">
+                  <span class="e_arrow"></span>
+                  <i>*Step Name is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-lg-4 col-md-6 col-12 mb-0">
+              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Add Step</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-12" *ngIf="formSteps.length > 0">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Form Steps List</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive" cdkDropList (cdkDropListDropped)="drop($event)">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Form Name</th>
+                <th scope="col">Step Name</th>
+                <th scope="col">Enable/Disable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let step of formSteps; let i  = index" cdkDrag>
+                <td>{{ step?.formName }}</td>
+                <td>{{ step.stepName }}</td>
+                <td>{{ step?.isActive ? 'Yes' : 'No' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

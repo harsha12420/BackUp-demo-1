@@ -1,0 +1,28 @@
+@import url('../../../../../assets/css/custom-field.scss');
+
+.form-switch {
+  cursor: pointer;
+}
+
+.switch-center {
+  display: flex;
+  justify-content: center;
+}
+
+.set-position-custom {
+  margin: -31px 11px 0 0;
+  float: right;
+}
+
+.ng-select-container {
+  border-color: #ced4da !important;
+  border-radius: 0.25rem !important;
+}
+
+.form-group {
+  margin-bottom: 0px !important;
+}
+
+.mat-mdc-dialog-surface .mdc-dialog__surface {
+  max-height: 100% !important;
+}

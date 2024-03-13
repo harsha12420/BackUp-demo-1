@@ -1,0 +1,338 @@
+<div class="card-footer py-0">
+  <div class="profile-tab tab-menu-heading border-bottom-0">
+    <nav ngbNav #nav="ngbNav" class="main-nav-line p-0 tabs-menu profile-nav-line border-0 br-5 mb-0">
+      <!-- <ng-container ngbNavItem>
+          <a ngbNavLink class="mb-2 mt-2">About</a> -->
+      <div class="main-content-body tab-pane edit-profile-edit-here-only-cls-add">
+        <div class="card border-left-none">
+          <div class="card-body p-0 border-0 p-0 rounded-10 textarea-related-text-cls">
+            <div class="p-4 padding-cum-cls-add">
+              <form [formGroup]="editSchoolForm" (ngSubmit)="onSubmit()">
+                <div class="row justify-content-center">
+                  <div class="col-lg-4 col-12 mb-4"></div>
+                  <div class="form-group col-lg-3 upload-profile-pics-cls-add selection-label-reverse-edit col-12 mb-4">
+                    <label class="d-flex justify-content-center">School logo</label>
+                    <ngx-dropzone id="dropzone" class="form-control" (change)="onPreviewFileSelect($event)"
+                      accept=".png, .jpg, .jpeg" #dropzone [multiple]="false">
+                      <ngx-dropzone-label *ngIf="!imgUrl">
+                        <div>
+                          <h2>Please Select School Logo</h2>
+                        </div>
+                      </ngx-dropzone-label>
+                      <img *ngIf="imgUrl && !isImgEdit" [src]="imgUrl" alt="" />
+                      <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of filesPreview"
+                        [file]="f" [removable]="true" (removed)="onPreviewFileRemove(f)">
+                      </ngx-dropzone-image-preview>
+                    </ngx-dropzone>
+                    <div class="text-danger" *ngIf="isImageSelected">
+                      Please select at least one image.
+                    </div>
+                  </div>
+                  <div class="col-lg-5 col-12 mb-4"></div>
+
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter school name" formControlName="name" />
+                    <label>School name
+                      <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']"
+                      class="text-danger">
+                      School name is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter school code"
+                      formControlName="short_code" />
+                    <label>School code
+                      <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['short_code'].touched) && form['short_code'].errors?.['required']"
+                      class="text-danger">
+                      School code is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter school branch name"
+                      formControlName="branch_name" />
+                    <label>School branch name
+                      <span class="required-asterisk">*</span></label>
+                    <div
+                      *ngIf="(isSubmitted || form['branch_name'].touched) && form['branch_name'].errors?.['required']"
+                      class="text-danger">
+                      School branch name is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="email" class="form-control" placeholder="Enter email" formControlName="email" />
+                    <label>Email address
+                      <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['email'].touched) && form['email'].errors?.['required']"
+                      class="text-danger">
+                      Email address is required.
+                    </div>
+                    <div *ngIf="(isSubmitted || form['email'].touched) && form['email'].errors?.['email']"
+                      class="text-danger">
+                      Invalid email format.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 selection-label-reverse col-12 col-md-6">
+                    <textarea class="form-control" placeholder="Enter school address" formControlName="address"
+                      cols="30" rows="3"></textarea>
+                    <label>School Address
+                      <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['address'].touched) && form['address'].errors?.['required']"
+                      class="text-danger">
+                      School address is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter city" formControlName="city" />
+                    <label>City <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['city'].touched) && form['city'].errors?.['required']"
+                      class="text-danger">
+                      City is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter state" formControlName="state" />
+                    <label>State <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['state'].touched) && form['state'].errors?.['required']"
+                      class="text-danger">
+                      State is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter country" formControlName="country" />
+                    <label>Country <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['country'].touched) && form['country'].errors?.['required']"
+                      class="text-danger">
+                      Country is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter location" formControlName="location" />
+                    <label>Location<span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['location'].touched) && form['location'].errors?.['required']"
+                      class="text-danger">
+                      Location is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter latitude" formControlName="latitude" />
+                    <label>Latitude <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['latitude'].touched) && form['latitude'].errors?.['required']"
+                      class="text-danger">
+                      Latitude is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter longitude" formControlName="longitude" />
+                    <label>Longitude <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['longitude'].touched) && form['longitude'].errors?.['required']"
+                      class="text-danger">
+                      Longitude is required.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="Enter mobile number" formControlName="mobile"
+                      [min]="1000000000" [max]="9999999999" (keypress)="onPressAllowNumber($event)" />
+                    <label>Mobile number
+                      <span class="required-asterisk">*</span></label>
+                    <div *ngIf="(isSubmitted || form['mobile'].touched) && form['mobile'].errors?.['required']"
+                      class="text-danger">
+                      Mobile number is required.
+                    </div>
+                    <div
+                      *ngIf="(isSubmitted || form['mobile'].touched) && form['mobile'].errors?.['min'] || form['mobile'].errors?.['max']"
+                      class="text-danger">
+                      Please enter valid Mobile Number.
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 selection-label-reverse col-12 col-md-6">
+                    <label for="enrollment_type">Week Off Days <span class="required-asterisk">*</span></label>
+                    <ng-select formControlName="week_off_days" [multiple]="true" [closeOnSelect]="false">
+                      <ng-option value="0">Sunday</ng-option>
+                      <ng-option value="1">Monday</ng-option>
+                      <ng-option value="2">Tuesday</ng-option>
+                      <ng-option value="3">Wednesday</ng-option>
+                      <ng-option value="4">Thursday</ng-option>
+                      <ng-option value="5">Friday</ng-option>
+                      <ng-option value="6">Saturday</ng-option>
+                    </ng-select>
+
+                    <div *ngIf="
+                        (isSubmitted ||
+                        form['week_off_days'].touched) &&
+                        form['week_off_days'].errors?.['required']
+                      " class="text-danger">
+                      Week off day is required.
+                    </div>
+                  </div>
+                  <div class="col-lg-6"></div>
+                  <div class="col-lg-12">
+                    <label class="my-2">School index number </label>
+                    <div formArrayName="index_ids">
+                      <div *ngFor="
+                          let index_no of indexs().controls;
+                          let i = index
+                        ">
+                        <div class="main-portion-et-lo" [formGroupName]="i">
+                          <div class="form-group selection-label-reverse same-for-one">
+                            <label>Select Medium
+                              <span class="required-asterisk">*</span></label>
+                            <ng-select #getMediumId id="inputGroupSelect01" (change)="medium($event, 'index')"
+                              formControlName="medium_id" [clearable]="false">
+                              <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                                {{ Data.name }}
+                              </ng-option>
+                            </ng-select>
+                            <div
+                              *ngIf="(isIndexSubmitted || index_no.get('medium_id')?.touched) && index_no.get('medium_id')?.errors?.['required']"
+                              class="text-danger">
+                              Medium is required.
+                            </div>
+                          </div>
+                          <div class="form-group selection-label-reverse same-for-one">
+                            <label>Select Standards
+                              <span class="required-asterisk">*</span></label>
+
+                            <ng-select #getStandardIds formControlName="standard_ids" [clearable]="false"
+                              [multiple]="true" (remove)="removeSelectedElementIndex($event)" [closeOnSelect]="false"
+                              (change)="onStdChangeIndex($event)">
+                              <ng-option value="{{ Data.id }}" *ngFor="
+                                  let Data of getStandardListIndex(getMediumId)
+                                ">
+                                {{ Data.name }}
+                              </ng-option>
+                            </ng-select>
+                            <div
+                              *ngIf="(isIndexSubmitted || index_no.get('standard_ids')?.touched) && index_no.get('standard_ids')?.errors?.['required']"
+                              class="text-danger">
+                              Standard is required.
+                            </div>
+                          </div>
+                          <div class="form-group same-for-one">
+                            <input type="number" class="form-control" placeholder="Enter school index number"
+                              formControlName="index_number" />
+                            <label>School index number
+                              <span class="required-asterisk">*</span></label>
+                            <div
+                              *ngIf="(isIndexSubmitted || index_no.get('index_number')?.touched) && index_no.get('index_number')?.errors?.['required']"
+                              class="text-danger">
+                              Index number is required.
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <button class="btn btn-danger" (click)="removeIndex(i)">
+                              <span class="cross-cls-svg-added">
+                                <i class="fas fa-times"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-primary" (click)="addIndex()">
+                        Add index
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
+                    <label class="my-2">School aadhar diase number </label>
+                    <div formArrayName="aadhar_ids">
+                      <div *ngFor="
+                          let aadhar_no of aadhars().controls;
+                          let j = index
+                        ">
+                        <div class="main-portion-et-lo" [formGroupName]="j">
+                          <div class="form-group selection-label-reverse same-for-one">
+                            <label>Select Medium
+                              <span class="required-asterisk">*</span></label>
+
+                            <ng-select #getMediumId (change)="medium($event, 'aadhar')" formControlName="medium_id"
+                              [clearable]="false">
+                              <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                                {{ Data.name }}
+                              </ng-option>
+                            </ng-select>
+                            <div
+                              *ngIf="(isAadharSubmitted || aadhar_no.get('medium_id')?.touched) && aadhar_no.get('medium_id')?.errors?.['required']"
+                              class="text-danger">
+                              Medium is required.
+                            </div>
+                          </div>
+                          <div class="form-group selection-label-reverse same-for-one">
+                            <label>Select Standards
+                              <span class="required-asterisk">*</span></label>
+
+                            <ng-select formControlName="standard_ids" [clearable]="false" [multiple]="true"
+                              (remove)="removeSelectedElementAadhar($event)" [closeOnSelect]="false"
+                              (change)="onStdChangeAadhar($event)">
+                              <ng-option value="{{ Data.id }}" *ngFor="
+                                  let Data of getStandardListAadhar(getMediumId)
+                                ">
+                                {{ Data.name }}
+                              </ng-option>
+                            </ng-select>
+                            <div
+                              *ngIf="(isAadharSubmitted || aadhar_no.get('standard_ids')?.touched) && aadhar_no.get('standard_ids')?.errors?.['required']"
+                              class="text-danger">
+                              Standard is required.
+                            </div>
+                          </div>
+                          <div class="form-group same-for-one">
+                            <input type="number" class="form-control" placeholder="Enter school aadhar diase number"
+                              formControlName="aadhar_diase_number" />
+                            <label>School aadhar diase number
+                              <span class="required-asterisk">*</span>
+                            </label>
+                            <div
+                              *ngIf="(isAadharSubmitted || aadhar_no.get('aadhar_diase_number')?.touched) && aadhar_no.get('aadhar_diase_number')?.errors?.['required']"
+                              class="text-danger">
+                              Aadhar diase number is required.
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <button class="btn btn-danger" (click)="removeAadhar(j)">
+                              <span class="cross-cls-svg-added">
+                                <i class="fas fa-times"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-primary" (click)="addAadhar()">
+                        Add aadhar diase
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-primary mt-4 mb-0">
+                    Submit
+                  </button>
+                </div>
+              </form>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- </ng-container> -->
+    </nav>
+  </div>
+</div>
+
+<ng-template #imageCropper>
+  <div class="modal-header">
+    <h4 class="modal-title">Crop Image</h4>
+    <button type="button" class="close" aria-label="Close" (click)="imagemodalReference.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body d-flex align-items-center">
+    <image-cropper [imageFile]="imageChangedEvent" [maintainAspectRatio]="false"
+      (imageCropped)="imageCropped($event)"></image-cropper>
+  </div>
+  <div class="modal-footer d-flex justify-content-center">
+    <button class="btn btn-primary" (click)="onSave()">Save</button>
+  </div>
+</ng-template>

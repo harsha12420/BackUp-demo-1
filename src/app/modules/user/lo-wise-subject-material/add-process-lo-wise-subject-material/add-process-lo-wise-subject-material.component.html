@@ -1,0 +1,210 @@
+<app-page-header [title]="'subject material entry'" [items]="['subject material entry']"
+  [active_item]="' Add Subject Material Entry'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Add Subject Material Entry</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="subjectMaterialForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Medium <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="medium($event)" formControlName="medium_id"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of mediumList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['medium_id'].touched) && form['medium_id'].errors?.['required']"
+                class="text-danger">
+                Medium is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Subject <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="subject($event)" formControlName="subject_id"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of subjectList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['subject_id'].touched) && form['subject_id'].errors?.['required']"
+                class="text-danger">
+                Subject is required.
+              </div>
+            </div>
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Standard <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="standard($event)" formControlName="standard_id"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of standardList">
+                  {{ Data.name }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['standard_id'].touched) && form['standard_id'].errors?.['required']"
+                class="text-danger">
+                Standard is required.
+              </div>
+            </div>
+
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Select Lesson <span class="required-asterisk">*</span></label>
+              <ng-select id="inputGroupSelect01" (change)="lessonIdList($event)" formControlName="lesson_id"
+                [clearable]="false">
+                <ng-option value="{{ Data.id }}" *ngFor="let Data of lessonList">
+                  {{ Data.lesson }}
+                </ng-option>
+              </ng-select>
+              <div *ngIf="(isSubmitted || form['lesson_id'].touched) && form['lesson_id'].errors?.['required']"
+                class="text-danger">
+                Lesson is required.
+              </div>
+            </div>
+
+            <div class="form-group col-6 selection-label-reverse">
+              <label>Add Material Status
+                <span class="required-asterisk">*</span></label>
+
+              <select class="form-control" formControlName="material_status">
+                <option value="publish">Publish</option>
+                <option value="pending">Pending</option>
+              </select>
+              <div
+                *ngIf="(isSubmitted || form['material_status'].touched) && form['material_status'].errors?.['required']"
+                class="text-danger">
+                Add Material Status is required.
+              </div>
+            </div>
+
+            <div class="form-group col-6 selection-label-reverse">
+              <label> Status <span class="required-asterisk">*</span></label>
+
+              <select class="form-control" formControlName="status">
+                <option value="true">Active</option>
+                <option value="false">In Active</option>
+              </select>
+              <div *ngIf="(isSubmitted || form['status'].touched) && form['status'].errors?.['required']"
+                class="text-danger">
+                Status is required.
+              </div>
+            </div>
+          </div>
+          <div class="form-group" formArrayName="materials">
+            <div *ngFor="let lessonGroup of lessons().controls; let i = index">
+              <div class="row" [formGroupName]="i">
+                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                  <label>Select Topic
+                    <span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" (change)="topicId($event)" formControlName="topic_id"
+                    [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of topicList">
+                      {{ Data.topic_name }}
+                    </ng-option>
+                  </ng-select>
+                  <div *ngIf="
+                      (isSubmitted || lessonGroup.get('topic_id')?.touched) &&
+                      lessonGroup.get('topic_id')?.hasError('required')
+                    " class="text-danger">
+                    Topic is required.
+                  </div>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                  <label>Select LO <span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" (change)="loId($event)" formControlName="lo_id"
+                    [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of loList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                  <div *ngIf="
+                      (isSubmitted || lessonGroup.get('lo_id')?.touched) &&
+                      lessonGroup.get('lo_id')?.hasError('required')
+                    " class="text-danger">
+                    LO is required.
+                  </div>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                  <label>Select LO Level<span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" (change)="loLevel($event)" formControlName="lo_level_id"
+                    [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of loListLevel">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                  <div *ngIf="
+                      (isSubmitted ||
+                        lessonGroup.get('lo_level_id')?.touched) &&
+                      lessonGroup.get('lo_level_id')?.hasError('required')
+                    " class="text-danger">
+                    LO Level is required.
+                  </div>
+                </div>
+
+                <div class="form-group selection-label-reverse col-lg-3 col-10 col-md-3">
+                  <label>Select Subject Material Type<span class="required-asterisk">*</span></label>
+                  <ng-select id="inputGroupSelect01" (change)="subjectMaterialId($event)"
+                    formControlName="subject_material_type_id" [clearable]="false">
+                    <ng-option value="{{ Data.id }}" *ngFor="let Data of SubjectMaterialList">
+                      {{ Data.name }}
+                    </ng-option>
+                  </ng-select>
+                  <div *ngIf="
+                      (isSubmitted ||
+                        lessonGroup.get('subject_material_type_id')?.touched) &&
+                      lessonGroup
+                        .get('subject_material_type_id')
+                        ?.hasError('required')
+                    " class="text-danger">
+                    subject Material Type is required.
+                  </div>
+                </div>
+
+                <div class="form-group col-6 selection-label-reverse">
+                  <label>Add Material Status Status
+                    <span class="required-asterisk">*</span></label>
+
+                  <select class="form-control" formControlName="material_status">
+                    <option value="publish">Publish</option>
+                    <option value="pending">Pending</option>
+                  </select>
+
+                  <div *ngIf="
+                      (isSubmitted ||
+                        lessonGroup.get('material_status')?.touched) &&
+                      lessonGroup.get('material_status')?.hasError('required')
+                    " class="text-danger">
+                    subject Material Type is required.
+                  </div>
+                </div>
+                <div class="col-lg-2 col-2 col-md-2 mb-sm-2 mb-md-2">
+                  <button class="btn btn-danger" (click)="removeLesson(i)">
+                    <span class="cross-cls-svg-added">
+                      <i class="fas fa-times"></i>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <button class="btn btn-primary mb-0 mx-auto text-center" type="button" (click)="addLesson()">
+              Add Topic
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary mt-4 mb-0">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

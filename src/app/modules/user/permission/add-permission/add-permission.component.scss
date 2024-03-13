@@ -1,0 +1,38 @@
+.multi-select-container {
+  width: 100%;
+  border: 1px solid #ccc;
+  max-height: 350px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+}
+
+.option-list {
+  list-style: none;
+  padding: 0;
+  li {
+    padding: 5px;
+  }
+  li:hover {
+    background-color: #4ec2f0;
+    color: white;
+  }
+}
+
+.option-list li {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.option-list li input {
+  margin-right: 5px;
+}
+
+.side-menu:hover {
+  background-color: #4ec2f0;
+}
+.active {
+  color: blue !important;
+}

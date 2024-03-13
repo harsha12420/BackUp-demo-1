@@ -1,0 +1,220 @@
+<app-page-header [title]="'All Reporting'" [items]="['Reporting']" [active_item]="'All Reporting'"></app-page-header>
+<div class="fulltyped">
+  <form [formGroup]="dateForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="form-group col-lg-3 col-md-6">
+        <input class="form-control" type="date" id="birth_date" formControlName="startDate" />
+        <label>Start Date</label>
+        <div class="text-danger"
+          *ngIf="(isSubmitted || form['startDate'].touched) && form['startDate'].errors?.['required']">
+          Start date is required
+        </div>
+      </div>
+      <div class="form-group col-lg-3 col-md-6">
+        <input class="form-control" type="date" id="birth_date" formControlName="endDate" />
+        <label>End Date</label>
+        <div class="text-danger"
+          *ngIf="(isSubmitted || form['endDate'].touched) && form['endDate'].errors?.['required']">
+          End date is required
+        </div>
+        <div class="text-danger"
+          *ngIf="dateForm.errors?.['dateRange'] && (form['endDate'].dirty || form['endDate'].touched)">
+          End date must be equal or greater than start date.
+        </div>
+      </div>
+      <div class="form-group col-lg-2 col-md-6">
+        <button class="btn btn-primary me-2" type="submit">Search</button>
+        <button class="btn btn-dark" type="button" (click)="onDateClear()">
+          Clear
+        </button>
+      </div>
+      <div class="form-group col-lg-4 col-md-6 selection-label-reverse">
+        <select class="form-control" [(ngModel)]="dateFilter" [ngModelOptions]="{ standalone: true }"
+          (change)="changeDateFilter()">
+          <option value="null" disabled>Select Date Filter</option>
+          <option value="1">Daily</option>
+          <option value="2">Weekly</option>
+          <option value="3">Monthly</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card add-staff-here-update-cls">
+        <div class="card-header pb-0 same-for-all-select-component-cls-adding">
+          <div class="d-flex justify-content-between blocking-responsive">
+            <h4 class="card-title mg-b-0">All Reporting</h4>
+          </div>
+
+          <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+            <div class="form-group selection-label-reverse mb-0 me-2">
+              <ng-select [multiple]="true" [closeOnSelect]="false" [(ngModel)]="userIds"
+                [ngModelOptions]="{standalone: true}" (change)="onSearch(true)">
+                <ng-option [value]="item.id" *ngFor="let item of staffList">{{item.first_name | titlecase}}
+                  {{item.middle_name | titlecase}} {{item.last_name | titlecase}}</ng-option>
+              </ng-select>
+              <label>Select Employees</label>
+            </div>
+            <div class="d-flex spacing-down-side position-relative">
+              <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                (keyup.enter)="onSearch()" />
+              <div class="set-position-auto-cls-adding">
+                <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+                <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+              </div>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select [(ngModel)]="reportType" (change)="getList()">
+                <option value="ALL">All Reporting</option>
+                <option value="ANSWERED">Answered Reporting</option>
+                <option value="UNANSWERED">Unsaved Reporting</option>
+              </select>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select #exportAll (change)="exportAllReporting(exportAll.value)">
+                <option value="" selected disabled>Export</option>
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col" (click)="sortData('description')">
+                    Description
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'description' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'description' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col" (click)="sortData('answer')">
+                    Answer
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color': orderBy === 'answer' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color': orderBy === 'answer' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col">Reported By</th>
+                  <th scope="col">Answered By</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" (click)="sortData('remaining_time_limit')">
+                    Remaining Time Limit
+                    <div class="spacing-up-down-side-set">
+                      <span class="arrow-up" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'remaining_time_limit' && isAscending
+                        }"></span>
+                      <span class="arrow-down" [ngClass]="{
+                          'arrow-color':
+                            orderBy === 'remaining_time_limit' && !isAscending
+                        }"></span>
+                    </div>
+                  </th>
+                  <th scope="col">View Attachment</th>
+                  <th scope="col" (click)="sortData('updated_at')">
+                    Date & Time
+                  </th>
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'updated_at' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'updated_at' && !isAscending
+                      }"></span>
+                  </div>
+                </tr>
+              </thead>
+              <tbody *ngIf="list.length">
+                <tr *ngFor="let report of list; let i = index">
+                  <th scope="row">
+                    {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                  </th>
+                  <td>
+                    <ckeditor [editor]="editor" [disabled]="true" [config]="{ toolbar: [] }"
+                      [data]="report.description">
+                    </ckeditor>
+                  </td>
+                  <td>
+                    <textarea [rows]="6" [cols]="30" [disabled]="true" [(ngModel)]="report.answer">
+                    </textarea>
+                  </td>
+                  <td>
+                    {{ report.created_first_name | titlecase }}
+                    {{ report.created_middle_name | titlecase }}
+                    {{ report.created_last_name | titlecase }}
+                  </td>
+                  <td>
+                    {{ report.take_first_name | titlecase }}
+                    {{ report.take_middle_name | titlecase }}
+                    {{ report.take_last_name | titlecase }}
+                  </td>
+                  <td>
+                    {{ report.answer ? "YES" : "NO" }}
+                  </td>
+                  <td class="dateing-inn">
+                    <div class="breaking-opi">
+                      {{
+                      report.answer
+                      ? "-"
+                      : (report.remaining_time_limit
+                      | date : "yyyy-MM-dd hh:mm a")
+                      }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls"
+                      *ngIf="report.attachment_urls">
+                      <i (click)="previewDoc(report.attachment_urls)" class="far fa-eye"></i>
+                    </div>
+                    <span *ngIf="!report.attachment_urls">-</span>
+                  </td>
+                  <td class="dateing-inn">
+                    {{ report.updated_at | date : "yyyy-MM-dd hh:mm a" }}
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="!list.length">
+                <tr>
+                  <td colspan="14" class="text-center">No Data Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+            <div class="d-flex align-items-center">
+              <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option [value]="totalItems">All</option>
+              </select>
+              <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+            </div>
+            <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+              [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

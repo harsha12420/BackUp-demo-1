@@ -1,0 +1,74 @@
+<div class="row row-sm mt-5">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <form [formGroup]="fieldSelectionForm">
+        <div class="card-header pb-0">
+          <div class="d-flex justify-content-between blocking-responsive">
+            <h4 class="card-title mg-b-0">Select Fields</h4>
+          </div>
+          <div class="row" style="margin-top: 25px;">
+            <div class="form-group selection-label-reverse col-lg-3 col-md-6 col-12">
+              <label for="formSelection">Select Form</label>
+              <ng-select [items]="formOptions" bindValue="_id" bindLabel="formName"
+                formControlName="formId" (change)="getFormStepList()">
+              </ng-select>
+              <div *ngIf="(isSubmitted || formControls['formId'].touched) && formControls['formId'].errors">
+                <div class="error_message" *ngIf="formControls['formId'].errors['required']">
+                  <span class="e_arrow"></span>
+                  <i>*Form is required</i>
+                </div>
+              </div>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-3 col-md-6 col-12">
+              <label for="formSelection">Select Steps</label>
+              <ng-select [items]="formSteps" bindValue="_id" bindLabel="stepName"
+                formControlName="stepId" (change)="getGroupList()">
+              </ng-select>
+            </div>
+            <div class="form-group selection-label-reverse col-lg-3 col-md-6 col-12">
+              <label for="formSelection">Select Group</label>
+              <ng-select [items]="groupOptions" bindValue="_id" bindLabel="groupName"
+                formControlName="groupId" (change)="getSelectedGroupField()">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="card-body">
+        <div cdkDropList class="table-responsive" (cdkDropListDropped)="drop($event)">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover" datatable>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Field Type</th>
+                <th scope="col">Is Required</th>
+                <!-- <th scope="col">Is Fixed</th> -->
+                <th scope="col">Is View</th>
+                <th scope="col">Options</th>
+                <th scope="col">Reference Type</th>
+                <th scope="col">Dependent On</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of fields; let i  = index" cdkDrag>
+                <td>{{ field.name }}</td>
+                <td>{{ field.fieldName }}</td>
+                <td>{{ field.isRequired ? 'Yes' : "No" }}</td>
+                <td>{{ field.isListView ? 'Yes' : "No" }}</td>
+                <td>{{ field.options?.length > 0 ? field.options : '-' }}</td>
+                <td>{{ field?.referenceType || '-' }}</td>
+                <td>{{ field?.dependentOn || '-' }}</td>
+              </tr>
+              <tr *ngIf="fields.length === 0">
+                <td colspan="7">
+                  No Data Found! Please add custom fields!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

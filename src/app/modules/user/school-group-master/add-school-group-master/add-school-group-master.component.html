@@ -1,0 +1,345 @@
+<app-page-header [title]="'School Group'" [items]="['School Group']"
+  [active_item]="'Add School Group'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">School Group List</h4>
+        </div>
+
+        <!-- <div class="d-flex blocking-responsive">
+            <div class="me-2 d-flex spacing-down-side">
+              <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+                (keyup.enter)="onSearch()" />
+              <button class="btn btn-primary me-2" (click)="onSearch()">
+                Search
+              </button>
+              <button class="btn btn-dark" (click)="onClear()">Clear</button>
+            </div>
+            <button class="btn btn-primary" (click)="onModalOpen()">
+              Add School Group
+            </button>
+            <div class="reportiong-framework-btn-cls-add spacing-down-side export-btn-cls-add">
+              <select [(ngModel)]="selectedExportOption">
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+              <button class="btn btn-primary spacing-left" (click)="exportSelected()">
+                Export
+              </button>
+            </div>
+          </div> -->
+        <!-- </div> -->
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" (click)="onSearch()" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+            <div class="reportiong-framework-btn-cls-add spacing-down-side export-btn-cls-add">
+              <select [(ngModel)]="selectedExportOption" (change)="exportSelected(selectedExportOption)">
+                <option value="null" disabled>Export</option>
+                <option value="pdf">Export to Pdf</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('name')">
+                  Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('description')">
+                  Description
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'description' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'description' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('admin_group_name')">
+                  Group name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_group_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_group_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('admin_sub_group_name')">
+                  Sub group name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_sub_group_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_sub_group_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('admin_role_name')">
+                  Role name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_role_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'admin_role_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">staff Count</th>
+
+                <th scope="col" (click)="sortData('created_at')">
+                  Created At
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="reportingList.length">
+              <tr *ngFor="let item of reportingList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.name | titlecase }}</td>
+                <td>{{ item.description | titlecase }}</td>
+                <td>{{ item.admin_group_name | titlecase }}</td>
+                <td>{{ item.admin_sub_group_name | titlecase }}</td>
+                <td>{{ item.admin_role_name | titlecase }}</td>
+                <td>
+                  {{ item.user_count }}
+                </td>
+
+                <td class="dateing-inn">
+                  {{ item.created_at | date : "yyyy-MM-dd hh:mm a" }}
+                </td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i (click)="onView(item.id)" class="far fa-eye"></i>
+                    <i (click)="editSchoolGroup(item.id)" class="fas fa-edit"></i>
+                    <i (click)="deleteSchoolGroup(item.id)" class="fas fa-trash"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!reportingList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #schoolGroup>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} School Group</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="schoolGroupForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-lg-6 selection-label-reverse">
+          <label>Select group <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" formControlName="Group" (change)="Group($event)" [clearable]="false">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of groupList">
+              {{ Data.name }}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['Group'].touched) && form['Group'].errors?.['required']" class="text-danger">
+            group is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 selection-label-reverse">
+          <label>Select Sub group <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" formControlName="SubGroup" (change)="subGroup($event)" [clearable]="false">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of subGroupList">
+              {{ Data.name }}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['SubGroup'].touched) && form['SubGroup'].errors?.['required']"
+            class="text-danger">
+            Sub group is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 selection-label-reverse">
+          <label>Select Role <span class="required-asterisk">*</span></label>
+          <ng-select id="inputGroupSelect01" formControlName="Role" [clearable]="false" (change)="getRoleId($event)">
+            <ng-option value="{{ Data.id }}" *ngFor="let Data of roleList">
+              {{ Data.name }}
+            </ng-option>
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['Role'].touched) && form['Role'].errors?.['required']" class="text-danger">
+            Role is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6">
+          <input type="text" class="form-control" placeholder="Enter Reporting  Name" formControlName="name" />
+          <label> Add Name <span class="required-asterisk">*</span></label>
+          <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']" class="text-danger">
+            Name is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6">
+          <input type="text" class="form-control" placeholder="Enter Description" formControlName="description" />
+          <label>
+            Add Description <span class="required-asterisk">*</span></label>
+          <div *ngIf="(isSubmitted || form['description'].touched) && form['description'].errors?.['required']"
+            class="text-danger">
+            Description is required.
+          </div>
+        </div>
+        <div class="col-lg-6" formArrayName="user_ids">
+          <div *ngFor="let role of user_ids.controls; let i = index" [formGroupName]="i">
+            <div class="form-group selection-label-reverse">
+              <label>Select Employees <span class="required-asterisk">*</span></label>
+              <ng-select formControlName="user_id" [multiple]="true" [closeOnSelect]="false">
+                <ng-template ng-header-tmp>
+                  <div>
+                    <button class="btn btn-link" type="button" (click)="onSelectAll()">
+                      Select All
+                    </button>
+                    <button class="btn btn-link" type="button" (click)="onClearAll()">
+                      Clear All
+                    </button>
+                  </div>
+                </ng-template>
+                <ng-option [value]="user.id" *ngFor="let user of staffList">{{
+                  user.first_name +
+                  " " +
+                  user.middle_name +
+                  " " +
+                  user.last_name | titlecase
+                  }}</ng-option>
+              </ng-select>
+              <div class="text-danger"
+                *ngIf="role.get('user_id')?.errors?.['required'] && (role.get('user_id')?.touched || isSubmitted)">
+                Employee is required.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<ng-template #view>
+  <div class="modal-header">
+    <h4 class="modal-title">school group list</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="table-responsive">
+    <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Sr. No.</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Group name</th>
+          <th scope="col">Sub Group name</th>
+
+          <th scope="col">Role name</th>
+
+          <th scope="col">Staff name</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="viewList?.length">
+        <tr *ngFor="let item of viewList; let i = index">
+          <th scope="row">
+            {{ i + 1 + currentPage * pageLimit - pageLimit }}
+          </th>
+
+          <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.admin_group_name }}</td>
+          <td>{{ item.admin_sub_group_name }}</td>
+          <td>{{ item.admin_role_name }}</td>
+
+          <td>
+            <span *ngFor="let item of item.user_list; let last = last">
+              {{
+              item.first_name + " " + item.middle_name + " " + item.last_name
+              | titlecase
+              }}
+              <ng-container *ngIf="!last">,</ng-container>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="!viewList?.length">
+        <tr>
+          <td colspan="14" class="text-center">No Data Found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

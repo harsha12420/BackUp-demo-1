@@ -1,0 +1,211 @@
+<app-page-header [title]="'Staff Room'" [items]="['Staff Room']" [active_item]="'Add Staff Room'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Staff Room List</h4>
+        </div>
+
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" (click)="onSearch()" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select #selectExportAll (change)="exportAll(selectExportAll.value)">
+                <option value="" selected disabled>Export</option>
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('name')">
+                  Staff Room Name
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('inercom_number')">
+                  Staff Inercom Number
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'inercom_number' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color':
+                          orderBy === 'inercom_number' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('room_number')">
+                  Staff Room Number
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'room_number' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'room_number' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('is_active')">
+                  Staff Room Status
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'is_active' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'is_active' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('created_at')">
+                  Staff Room Date
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="staffRoomList.length">
+              <tr *ngFor="let item of staffRoomList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.name | titlecase }}</td>
+                <td>{{ item.inercom_number | titlecase }}</td>
+
+                <td>{{ item.room_number | titlecase }}</td>
+
+                <td>{{ item.is_active ? "Active" : "In Active" }}</td>
+
+                <td class="dateing-inn">
+                  {{ item.created_at | date : "yyyy-MM-dd hh:mm a" }}
+                </td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i (click)="editStaffRoom(item.id)" class="fas fa-edit"></i>
+                    <i (click)="deleteStaffRoom(item.id)" class="fas fa-trash"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!staffRoomList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #staffRoom>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Staff Room</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="staffRoomForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter Staff Room Name" formControlName="name" />
+          <label>
+            Add Staff Room Name <span class="required-asterisk">*</span>
+          </label>
+          <div *ngIf="(isSubmitted || form['name'].touched) && form['name'].errors?.['required']" class="text-danger">
+            Staff Room Name is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter Inercom Number" formControlName="inercom_number" />
+          <label>
+            Add Inercom Number <span class="required-asterisk">*</span></label>
+          <div *ngIf="(isSubmitted || form['inercom_number'].touched) && form['inercom_number'].errors?.['required']"
+            class="text-danger">
+            Inercom Number is required.
+          </div>
+        </div>
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input type="text" class="form-control" placeholder="Enter Room Number" formControlName="room_number" />
+          <label>
+            Add Room Number <span class="required-asterisk">*</span></label>
+          <div *ngIf="(isSubmitted || form['room_number'].touched) && form['room_number'].errors?.['required']"
+            class="text-danger">
+            Room Number is required.
+          </div>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse">
+          <label>Add Staff RoomType Status <span class="required-asterisk">*</span>
+          </label>
+          <select class="form-control" formControlName="Status">
+            <!-- <option [value]="null" disabled selected>
+              Select Staff Room Status
+            </option> -->
+            <option value="true">Active</option>
+            <option value="false">In Active</option>
+          </select>
+
+          <div *ngIf="(isSubmitted || form['Status'].touched) && form['Status'].errors?.['required']"
+            class="text-danger">
+            Staff Room Status is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

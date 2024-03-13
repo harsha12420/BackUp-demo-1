@@ -1,0 +1,55 @@
+<app-page-header [title]="'Razorpay'" [items]="['Razorpay']" [active_item]="'Razorpay'"></app-page-header>
+<!-- <button (click)="payNow()">Pay</button> -->
+    <button class="btn btn-primary spacing-left" (click)="onPayModalOpen()">
+        Pay
+      </button>
+      <a href="https://razorpay.com/docs/payments/payments/test-card-details/" rel="noopener" target="_blank">      Test Card</a>
+      <br >
+      <button class="btn btn-primary spacing-left" style="margin-top: 20px;" (click)="onRefundModalOpen()">
+        Refund
+      </button>
+
+
+      <ng-template #Payment>
+        <div class="modal-header">
+          <h4 class="modal-title">Payment</h4>
+          <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-12 col-md-12 col-lg-12">
+                <input type="number" [(ngModel)]="amount" class="form-control"  />
+                <label>
+                  Payment amount <span class="required-asterisk">*</span></label>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary mt-4 mb-0" (click)="payNow()">Submit</button>
+              </div>
+        </div>
+      </ng-template>
+
+
+      <ng-template #Refund>
+        <div class="modal-header">
+          <h4 class="modal-title">Payment</h4>
+          <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-12 col-md-12 col-lg-12">
+                <input type="text" [(ngModel)]="paymentId" class="form-control"  />
+                <label>
+                  Add Payment Id <span class="required-asterisk">*</span></label>
+            </div>
+            <div class="form-group col-12 col-md-12 col-lg-12">
+                <input type="number" [(ngModel)]="refundAmount" class="form-control"  />
+                <label>
+                  Add Refund Payment amount <span class="required-asterisk">*</span></label>
+            </div>
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary mt-4 mb-0" (click)="refundNow()">Submit</button>
+            </div>
+        </div>
+      </ng-template>

@@ -1,0 +1,383 @@
+<app-page-header
+  [title]="'Time Slot'"
+  [items]="['Time Slot']"
+  [active_item]="'Add Time Slot'"
+></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Time Slot List</h4>
+        </div>
+
+        <div
+          class="d-flex blocking-responsive justify-content-end align-items-center mt-2"
+        >
+          <div class="d-flex spacing-down-side position-relative">
+            <input
+              class="form-control me-2 ms-1"
+              type="text"
+              placeholder="Search..."
+              [(ngModel)]="searchString"
+              (keyup.enter)="onSearch()"
+            />
+            <div class="set-position-auto-cls-adding">
+              <i
+                class="fas fa-search"
+                [ngClass]="{ 'hide-icon': searchString }"
+              ></i>
+              <i
+                class="far fa-times-circle"
+                (click)="onClear()"
+                [ngClass]="{ 'show-icon': searchString }"
+              ></i>
+            </div>
+          </div>
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button
+                class="btn btn-primary spacing-left"
+                (click)="onModalOpen()"
+              >
+                <span class="add-ics-cls-proper-adding"
+                  ><i class="fas fa-plus"></i></span
+                >Add
+              </button>
+            </div>
+            <div class="export-btn-cls-add spacing-down-side">
+              <select
+                #selectExportAll
+                (change)="exportAll(selectExportAll.value)"
+              >
+                <option value="" selected disabled>Export</option>
+                <option value="pdf">Export to PDF</option>
+                <option value="excel">Export to Excel</option>
+                <option value="csv">Export to CSV</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table
+            summary="table"
+            class="table mg-b-0 text-md-nowrap table-striped table-hover"
+          >
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('name')">
+                  Session Name
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('slot_date')">
+                  Date
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'slot_date' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'slot_date' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('name')">
+                  Time (Start--End)
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'name' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('capacity')">
+                  Capacity
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'capacity' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'capacity' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('created_at')">
+                  Date & Time
+                  <div class="spacing-up-down-side-set">
+                    <span
+                      class="arrow-up"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && isAscending
+                      }"
+                    ></span>
+                    <span
+                      class="arrow-down"
+                      [ngClass]="{
+                        'arrow-color': orderBy === 'created_at' && !isAscending
+                      }"
+                    ></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="timeSlotList.length">
+              <tr *ngFor="let item of timeSlotList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.session.name | titlecase }}</td>
+                <td>{{ item.slot_date | date : "yyyy-MM-dd " }}</td>
+
+                <td>{{ item.from_time }} - {{ item.to_time }}</td>
+
+                <td>{{ item.capacity }}</td>
+
+                <td class="dateing-inn">
+                  {{ item.created_at | date : "yyyy-MM-dd hh:mm a" }}
+                </td>
+
+                <td>
+                  <div
+                    class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls"
+                  >
+                    <i (click)="editTimeSlot(item._id)" class="fas fa-edit"></i>
+                    <i
+                      (click)="deleteTimeSlot(item._id)"
+                      class="fas fa-trash"
+                    ></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!timeSlotList.length">
+              <tr>
+                <td colspan="14" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+            <select
+              class="records-select"
+              [(ngModel)]="pageLimit"
+              name=""
+              id=""
+              (change)="onPageChange(1)"
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination
+            [collectionSize]="totalItems"
+            [maxSize]="5"
+            [rotate]="true"
+            [pageSize]="pageLimit"
+            [(page)]="currentPage"
+            aria-label="Default pagination"
+            (pageChange)="onPageChange($event)"
+          >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #Department>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Time Slot</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="onModalClose()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body here-is-modal-part-custom-edit-change-cls">
+    <form [formGroup]="timeSlotForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div
+          class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse"
+        >
+          <label>Select Session<span class="required-asterisk">*</span></label>
+
+          <ng-select
+            id="inputGroupSelect01"
+            (change)="getSessionId($event)"
+            formControlName="Session"
+          >
+            <ng-option selected [value]="null" disabled
+              >Select Session</ng-option
+            >
+            <ng-option value="{{ Data._id }}" *ngFor="let Data of sessionlist">
+              {{ Data.name }}
+            </ng-option>
+          </ng-select>
+          <div
+            *ngIf="(isSubmitted || form['Session'].touched) && form['Session'].errors?.['required']"
+            class="text-danger"
+          >
+            Session is required.
+          </div>
+        </div>
+        <div
+          class="form-group col-12 col-lg-6 col-md-6 selection-label-reverse"
+        >
+          <input
+            class="form-control"
+            formControlName="range"
+            bsDaterangepicker
+            [bsConfig]="{
+              rangeInputFormat: 'MMM DD, YYYY',
+              maxDate: maxdate,
+              minDate: mindate
+            }"
+            (keydown)="$event.preventDefault()"
+          />
+
+          <label>Date Range</label>
+
+          <div
+            *ngIf="(isSubmitted || form['range'].touched) && form['range'].errors?.['required']"
+            class="text-danger"
+          >
+            Date Range is required
+          </div>
+        </div>
+      </div>
+      <div class="row" id="start-support">
+        <div
+          class="form-group col-lg-6 col-md-6 col-12 same-labeling-transform-remove"
+          id="datetime_timepicker"
+        >
+          <label> Start Time <span class="required-asterisk">*</span></label>
+          <ngb-timepicker
+            formControlName="Start_Time"
+            [meridian]="true"
+          ></ngb-timepicker>
+
+          <div
+            *ngIf="(isSubmitted || form['Start_Time'].touched) && form['Start_Time'].errors?.['required']"
+            class="text-danger"
+          >
+            Start Time is required.
+          </div>
+          <div
+            *ngIf="(isSubmitted || form['Start_Time'].touched) && form['Start_Time'].errors?.['invalidDate']"
+            class="text-danger"
+          >
+            Please select Start Time
+          </div>
+        </div>
+        <div
+          class="form-group col-lg-6 col-md-6 col-12 same-labeling-transform-remove"
+          id="datetime_timepicker"
+        >
+          <label> End Time <span class="required-asterisk">*</span></label>
+          <ngb-timepicker
+            formControlName="End_Time"
+            [meridian]="true"
+          ></ngb-timepicker>
+
+          <div
+            *ngIf="(isSubmitted || form['End_Time'].touched) && form['End_Time'].errors?.['required']"
+            class="text-danger"
+          >
+            End Time is required.
+          </div>
+          <div
+            *ngIf="(isSubmitted || form['End_Time'].touched) && timeSlotForm.errors?.['timemax']"
+            class="text-danger"
+          >
+            Please Select End Time Proper
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-lg-6 col-md-6 col-12">
+          <input
+            type="number"
+            class="form-control"
+            formControlName="Capacity"
+            placeholder="Time Slot Capacity"
+          />
+          <label for="Capacity" class="form-label"
+            >Time Slot Capacity <span class="required-asterisk">*</span></label
+          >
+          <div
+            *ngIf="(isSubmitted || form['Capacity'].touched) && form['Capacity'].errors?.['required']"
+            class="text-danger"
+          >
+            Capacity is required.
+          </div>
+        </div>
+        <div
+          class="form-group col-lg-6 col-md-6 col-12 selection-label-reverse"
+        >
+          <label
+            >Add Time Slot Type Status
+            <span class="required-asterisk">*</span></label
+          >
+
+          <select class="form-control" formControlName="Status">
+            <option value="true">Active</option>
+            <option value="false">In Active</option>
+          </select>
+          <div
+            *ngIf="(isSubmitted || form['Status'].touched) && form['Status'].errors?.['required']"
+            class="text-danger"
+          >
+            Time Slot Status is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

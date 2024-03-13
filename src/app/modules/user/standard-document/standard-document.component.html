@@ -1,0 +1,180 @@
+<app-page-header [title]="'Assign Document To Standard'" [items]="['Assign Document']"
+  [active_item]="'Assign Document To Standard'"></app-page-header>
+<div class="row row-sm">
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Assigned Document List</h4>
+        </div>
+        <div class="d-flex blocking-responsive justify-content-end align-items-center mt-2">
+          <!-- <div class="d-flex spacing-down-side position-relative">
+            <input class="form-control me-2 ms-1" type="text" placeholder="Search..." [(ngModel)]="searchString"
+              ((keypress))="onSearch()" />
+            <div class="set-position-auto-cls-adding">
+              <i class="fas fa-search" [ngClass]="{ 'hide-icon': searchString }"></i>
+              <i class="far fa-times-circle" (click)="onClear()" [ngClass]="{ 'show-icon': searchString }"></i>
+            </div>
+          </div> -->
+          <div class="d-flex blocking-responsive">
+            <div class="add-reporting spacing-down-side">
+              <button class="btn btn-primary spacing-left" (click)="onModalOpen()">
+                <span class="add-ics-cls-proper-adding"><i class="fas fa-plus"></i></span>Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col" (click)="sortData('standard_name')">
+                  Standard
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'standard_name' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'standard_name' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col" (click)="sortData('fee_category_id')">Fee Category
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'fee_category_id' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'fee_category_id' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Documents</th>
+                <th scope="col" (click)="sortData('isActive')">
+                  Status
+                  <div class="spacing-up-down-side-set">
+                    <span class="arrow-up" [ngClass]="{
+                        'arrow-color': orderBy === 'isActive' && isAscending
+                      }"></span>
+                    <span class="arrow-down" [ngClass]="{
+                        'arrow-color': orderBy === 'isActive' && !isAscending
+                      }"></span>
+                  </div>
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="asignedDocumentList.length > 0">
+              <tr *ngFor="let item of asignedDocumentList; let i = index">
+                <th scope="row">
+                  {{ i + 1 + currentPage * pageLimit - pageLimit }}
+                </th>
+                <td>{{ item.standard_name }}</td>
+                <td>{{ item.feecategory.name | titlecase }}</td>
+                <td>{{ item.document_name }}
+                  <!-- <span *ngFor="let document of item.document_id; let last = last">
+                    {{ document.name | titlecase }}
+                    <ng-container *ngIf="!last">, </ng-container>
+                  </span> -->
+                </td>
+                <td>{{ item.isActive ? "Active" : "In Active" }}</td>
+                <td>
+                  <div class="d-flex align-items-center justify-content-center all-icons-edit-here-table-cls">
+                    <i (click)="deleteAssignedDocument(item._id)" class="fas fa-trash"></i>
+                    <i (click)="documentIds(item)" class="fas fa-edit"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="!asignedDocumentList.length">
+              <tr>
+                <td colspan="6" class="text-center">No Data Found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font" *ngIf="asignedDocumentList.length > 0">
+          <div class="d-flex align-items-center">
+            <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option [value]="totalItems">All</option>
+            </select>
+            <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+            [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #AssignDocuments>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ EditId ? "Edit" : " Add" }} Record</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onModalClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="assignDocumentForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="form-group selection-label-reverse col-6">
+          <label>Select Standard <span class="required-asterisk">*</span></label>
+          <ng-select id="standard_id" formControlName="standard_id" [clearable]="false" placeholder="Select Standard"
+            [items]="standardList" bindLabel="name" bindValue="id">
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['standard_id'].touched) && form['standard_id'].errors?.['required']"
+            class="text-danger">
+            Standard is required.
+          </div>
+        </div>
+
+        <div class="form-group selection-label-reverse col-6">
+          <label>Select Fee Category <span class="required-asterisk">*</span></label>
+          <ng-select id="fee_category_id" formControlName="fee_category_id" [clearable]="false"
+            placeholder="Select Fee Category" [items]="feeCategoryList" bindLabel="name" bindValue="_id">
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['fee_category_id'].touched) && form['fee_category_id'].errors?.['required']"
+            class="text-danger">
+            Fee category is required.
+          </div>
+        </div>
+
+        <div class="form-group selection-label-reverse col-6">
+          <label>Select Documents <span class="required-asterisk">*</span></label>
+          <ng-select id="document_id" formControlName="document_id" [clearable]="false" [multiple]="true"
+            placeholder="Select Documents" [items]="studentDocumentList" bindLabel="name" bindValue="id">
+          </ng-select>
+          <div *ngIf="(isSubmitted || form['document_id'].touched) && form['document_id'].errors?.['required']"
+            class="text-danger">
+            Documents are required.
+          </div>
+        </div>
+
+        <div class="form-group col-6 selection-label-reverse">
+          <label>Status <span class="required-asterisk">*</span></label>
+
+          <select class="form-control" formControlName="status">
+            <option value="">Select Status</option>
+            <option value="true">Active</option>
+            <option value="false">In Active</option>
+          </select>
+          <div *ngIf="(isSubmitted || form['status'].touched) && form['status'].errors?.['required']"
+            class="text-danger">
+            Status is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

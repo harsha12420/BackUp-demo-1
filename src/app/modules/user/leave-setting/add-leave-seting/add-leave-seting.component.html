@@ -1,0 +1,47 @@
+<app-page-header [title]="'LEAVE SETTING'" [items]="['Leave Setting']"
+    [active_item]="'Add Leave Setting'"></app-page-header>
+<div class="row row-sm">
+    <div class="col-xl-12">
+        <div class="card add-staff-here-update-cls">
+            <div class="card-header pb-0">
+                <h4 class="modal-title mb-3">Leave Setting</h4>
+                <div class="card-body">
+                    <form [formGroup]="leaveSetingForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-12">
+                                <input type="text" class="form-control" placeholder="Enter CL Credit"
+                                    formControlName="cl_count" maxlength="2" (keypress)="onPressAllowNumber($event)" />
+                                <label> CL Credit <span class="required-asterisk">*</span> </label>
+                                <div *ngIf="(isSubmitted || form['cl_count'].touched) && form['cl_count'].errors?.['required']"
+                                    class="text-danger">
+                                    CL Credit is required.
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-12">
+                                <input type="text" class="form-control" placeholder="Enter PL Credit"
+                                    formControlName="pl_count" maxlength="2" (keypress)="onPressAllowNumber($event)" />
+                                <label> PL credit <span class="required-asterisk">*</span></label>
+                                <div *ngIf="(isSubmitted || form['pl_count'].touched) && form['pl_count'].errors?.['required']"
+                                    class="text-danger">
+                                    PL Credit is required.
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-12">
+                                <input type="text" class="form-control" placeholder="Enter LWP"
+                                    formControlName="lwp_count" maxlength="2" (keypress)="onPressAllowNumber($event)" />
+                                <label> Used LWP <span class="required-asterisk">*</span> </label>
+                                <div *ngIf="(isSubmitted || form['lwp_count'].touched) && form['lwp_count'].errors?.['required']"
+                                    class="text-danger">
+                                    LWP is required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary mt-4 mb-0">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

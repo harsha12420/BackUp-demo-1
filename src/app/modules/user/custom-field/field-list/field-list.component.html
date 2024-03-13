@@ -1,0 +1,70 @@
+<div class="row mt-3">
+  <div class="col-12 d-flex justify-content-end mb-3">
+    <a class="cursor-pointer custom-field-a" (click)="redirectTo()">Back to add field</a>
+  </div>
+  <div class="col-xl-12">
+    <div class="card add-staff-here-update-cls">
+      <div class="card-header pb-0">
+        <div class="d-flex justify-content-between blocking-responsive">
+          <h4 class="card-title mg-b-0">Custom Fields List</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table summary="table" class="table mg-b-0 text-md-nowrap table-striped table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Field Type</th>
+                <th scope="col">Is Required</th>
+                <th scope="col">Options</th>
+                <th scope="col">Options Selection Type</th>
+                <th scope="col">Reference Type</th>
+                <th scope="col">Dependent On</th>
+                <th scope="col">Allow Serach In Dropdown</th>
+                <th scope="col">Enable/Disable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let field of fields; let i  = index">
+                <td>{{ field.name }}</td>
+                <td>{{ field.fieldName | titlecase }}</td>
+                <td>{{ field.isRequired ? 'Required' : 'Not Required' }}</td>
+                <td>{{ field.options.length > 0 ? field.options : '-' }}</td>
+                <td>{{ field.optionsType ? (field.optionsType | titlecase) : '-' }}</td>
+                <td>{{ field.referenceType || '-' }}</td>
+                <td>{{ field?.dependentOn || '-' }}</td>
+
+                <td>{{ field?.isSearch ? 'Yes' : 'No' }}</td>
+                <td class="switch-center">
+                  <i class="fa cursor-pointer fa-2x" [ngClass]="{'fa-toggle-on': field.isActive, 'fa-toggle-off': !field.isActive}" (click)="enableDisableField(field, i)"></i>
+                </td>
+              </tr>
+              <tr *ngIf="fields.length === 0">
+                <td colspan="9">
+                  No Data Found! Please add custom fields!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="d-flex justify-content-between p-2 record-pg-cls-cum-font">
+          <div class="d-flex align-items-center">
+              <select class="records-select" [(ngModel)]="pageLimit" name="" id="" (change)="onPageChange(1)">
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option [value]="totalItems">All</option>
+              </select>
+              <h6 class="m-0">&nbsp;&nbsp; - records per page</h6>
+          </div>
+          <ngb-pagination [collectionSize]="totalItems" [maxSize]="5" [rotate]="true" [pageSize]="pageLimit"
+              [(page)]="currentPage" aria-label="Default pagination" (pageChange)="onPageChange($event)">
+          </ngb-pagination>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+    overflow-y: auto;
+    height: auto;
+    max-height: 897px;
+}
+
+.disabled{
+    pointer-events: none;
+    
+}
